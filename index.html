@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEO - Irattár & Üzenőfal</title>
+    <title>NEO - e-Irattár & Üzenőfal</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
@@ -13,29 +13,42 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            /* Official Dark Mode Palette */
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --bg-input: #334155;
+            --bg-body: #000000;
+            --bg-card: #1a1a1a;
+            --bg-input: #2a2a2a;
             --text-main: #f1f5f9;
             --text-muted: #94a3b8;
             --primary: #fbbf24;
             /* Gold */
-            --primary-hover: #f59e0b;
-            --border: #334155;
+            --border: rgba(255, 255, 255, 0.1);
             --danger: #ef4444;
 
-            /* Institution Specific Colors */
-            --color-ninesz: #10b981;
-            --color-vg: #ef4444;
-            --color-nf: #3b82f6;
-            --color-pmh: #a855f7;
-            --color-nksk: #f59e0b;
-            --color-rszszk: #06b6d4;
-            --color-rktot: #475569;
+            --color-ninesz: 16, 185, 129;
+            --color-vg: 239, 68, 68;
+            --color-nf: 59, 130, 246;
+            --color-pmh: 219, 39, 119;
+            /* Pink */
+            --color-nksk: 245, 158, 11;
+            --color-rszszk: 6, 182, 212;
+            --color-rktöt: 13, 148, 136;
+            /* Teal */
+            --color-nvo: 132, 204, 22;
+            /* Lime */
+
+            --type-msg: 203, 213, 225;
+            --type-szamla: 251, 146, 60;
+            --type-szerz: 129, 140, 248;
+            --type-taj: 168, 85, 247;
+
+            --cat-alt: 113, 113, 122;
+            --cat-penz: 34, 197, 94;
+            --cat-musz: 234, 179, 8;
+            --cat-heat: 244, 63, 94;
+            --cat-outage: 190, 18, 60;
+            --cat-light: 45, 212, 191;
 
             --transition: all 0.2s ease;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            --shadow: 0 8px 12px -3px rgba(0, 0, 0, 0.5);
             --radius: 12px;
         }
 
@@ -47,38 +60,247 @@
         }
 
         body {
-            background-color: var(--bg-body);
+            background: var(--bg-body);
             color: var(--text-main);
-            line-height: 1.6;
+            line-height: 1.5;
             min-height: 100vh;
+            font-size: 0.9rem;
         }
 
         .navbar {
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(10px);
+            background: var(--bg-body);
             position: sticky;
             top: 0;
             z-index: 100;
-            padding: 1rem 5%;
+            padding: 0.8rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid var(--primary);
         }
 
+        /* Live Clock */
+        .clock-container {
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+            min-width: 185px;
+            justify-content: center;
+        }
+
+        .clock-container i {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        /* Colored Dropdown Options */
+        select option[value="Üzenet"] {
+            background-color: #1e293b;
+            color: rgba(203, 213, 225, 1);
+        }
+
+        select option[value="Számla"] {
+            background-color: #1e293b;
+            color: rgba(251, 146, 60, 1);
+        }
+
+        select option[value="Szerződés"] {
+            background-color: #1e293b;
+            color: rgba(129, 140, 248, 1);
+        }
+
+        select option[value="Tájékoztatás"] {
+            background-color: #1e293b;
+            color: rgba(168, 85, 247, 1);
+        }
+
+        select option[value="Általános"] {
+            background-color: #1e293b;
+            color: rgba(113, 113, 122, 1);
+        }
+
+        select option[value="Pénzügyi"] {
+            background-color: #1e293b;
+            color: rgba(34, 197, 94, 1);
+        }
+
+        select option[value="Műszaki"] {
+            background-color: #1e293b;
+            color: rgba(234, 179, 8, 1);
+        }
+
+        select option[value="Fűtés"] {
+            background-color: #1e293b;
+            color: rgba(244, 63, 94, 1);
+        }
+
+        select option[value="Üzemszünet"] {
+            background-color: #1e293b;
+            color: rgba(190, 18, 60, 1);
+        }
+
+        select option[value="Közvilágítás"] {
+            background-color: #1e293b;
+            color: rgba(45, 212, 191, 1);
+        }
+
+        /* Contract Subtype Styles */
+        select option[value="Általános"] {
+            background-color: #1e293b;
+            color: #71717a;
+        }
+
+        select option[value="Áram kereskedelmi"] {
+            background-color: #1e293b;
+            color: #3b82f6;
+        }
+
+        select option[value="Gáz kereskedelmi"] {
+            background-color: #1e293b;
+            color: #ef4444;
+        }
+
+        select option[value="Szolgáltatási szerződés"] {
+            background-color: #1e293b;
+            color: #0ea5e9;
+        }
+
+        select option[value="Vállalkozási szerződés"] {
+            background-color: #1e293b;
+            color: #818cf8;
+        }
+
+        select option[value="Hálózat-használati szerződés"] {
+            background-color: #1e293b;
+            color: #10b981;
+        }
+
+        select option[value="Hálózatcsatlakozási szerződés"] {
+            background-color: #1e293b;
+            color: #f43f5e;
+        }
+
+        select option[value="Egyetemes szolgáltatási szerződés"] {
+            background-color: #1e293b;
+            color: #f59e0b;
+        }
+
+        .sub-tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .sub-altalanos {
+            background: rgba(113, 113, 122, 0.2);
+            color: #a1a1aa;
+            border: 1px solid #71717a;
+        }
+
+        .sub-aram {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border: 1px solid #3b82f6;
+        }
+
+        .sub-gaz {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid #ef4444;
+        }
+
+        .sub-szolgaltatasi {
+            background: rgba(14, 165, 233, 0.2);
+            color: #7dd3fc;
+            border: 1px solid #0ea5e9;
+        }
+
+        .sub-vallalkozasi {
+            background: rgba(129, 140, 248, 0.2);
+            color: #a5b4fc;
+            border: 1px solid #818cf8;
+        }
+
+        .sub-halozat-haszn {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+            border: 1px solid #10b981;
+        }
+
+        .sub-halozat-csatl {
+            background: rgba(244, 63, 94, 0.2);
+            color: #fda4af;
+            border: 1px solid #f43f5e;
+        }
+
+        .sub-egyetemes {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fcd34d;
+            border: 1px solid #f59e0b;
+        }
+
+        select option[value="MVM"] {
+            background-color: #1e293b;
+            color: #3b82f6;
+        }
+
+        select option[value="E.ON"] {
+            background-color: #1e293b;
+            color: #ef4444;
+        }
+
+        select option[value="E2"] {
+            background-color: #1e293b;
+            color: #a855f7;
+        }
+
+        select option[value="DRV"] {
+            background-color: #1e293b;
+            color: #06b6d4;
+        }
+
+        select option[value="Equans"] {
+            background-color: #1e293b;
+            color: #f97316;
+        }
+
         .brand {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .brand:hover {
+            opacity: 0.8;
+            transform: scale(1.02);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
         }
 
         .nav-link {
-            padding: 0.6rem 1.2rem;
+            padding: 0.5rem 1rem;
             color: var(--text-muted);
-            text-decoration: none;
             font-weight: 600;
             border: none;
             background: transparent;
@@ -94,9 +316,9 @@
         }
 
         .container {
-            max-width: 1250px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
+            max-width: 1400px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
         }
 
         .view-section {
@@ -111,46 +333,131 @@
         @keyframes fadeIn {
             from {
                 opacity: 0;
+                transform: translateY(10px);
             }
 
             to {
                 opacity: 1;
+                transform: translateY(0);
             }
+        }
+
+        /* Featured Grid */
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .featured-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: var(--radius);
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .featured-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .badge-new {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 2px 14px rgba(251, 191, 36, 0.6);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
+            }
+        }
+
+        .featured-card .date {
+            font-size: 0.7rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .featured-card h3 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .featured-comment {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: -webkit-box;
+            line-clamp: 2;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.3;
+            height: 2.6em;
         }
 
         .card {
             background: var(--bg-card);
             border-radius: var(--radius);
-            padding: 2rem;
-            margin-bottom: 2rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
         }
 
         .card-header {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 1rem;
+            padding-bottom: 0.8rem;
         }
 
         .card-header h2 {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: var(--primary);
         }
 
+        /* Form */
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .label {
             display: block;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: var(--text-muted);
             margin-bottom: 0.4rem;
@@ -161,12 +468,13 @@
         .select,
         .textarea {
             width: 100%;
-            padding: 0.8rem;
+            padding: 0.6rem 0.8rem;
             background: var(--bg-input);
             border: 1px solid var(--border);
             border-radius: 8px;
             color: #fff;
             transition: var(--transition);
+            font-size: 0.9rem;
         }
 
         .input:focus {
@@ -175,13 +483,13 @@
         }
 
         .upload-zone {
-            border: 2px dashed var(--border);
-            padding: 2rem;
+            border: 1px dashed var(--border);
+            padding: 1.5rem;
             text-align: center;
             border-radius: var(--radius);
             margin-bottom: 1.5rem;
             cursor: pointer;
-            transition: var(--transition);
+            background: rgba(15, 23, 42, 0.3);
         }
 
         .upload-zone:hover {
@@ -189,32 +497,141 @@
             background: rgba(251, 191, 36, 0.05);
         }
 
-        .upload-zone.has-file {
-            border-color: var(--color-ninesz);
-            background: rgba(16, 185, 129, 0.05);
-        }
-
         .inst-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
             gap: 8px;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .inst-chip {
             padding: 8px;
-            background: var(--bg-input);
+            background: rgba(51, 65, 85, 0.3);
             border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
             text-align: center;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        .inst-chip:has(input:checked) {
-            border-color: var(--primary);
-            background: rgba(251, 191, 36, 0.2);
+        /* Passive States (unselected) */
+        .inst-chip[data-val="ALL"] {
+            border-color: rgba(251, 191, 36, 0.3);
+            background: rgba(251, 191, 36, 0.08);
+            color: var(--text-muted);
+        }
+
+        .inst-chip[data-val="NINESZ"] {
+            border-color: rgba(var(--color-ninesz), 0.3);
+            background: rgba(var(--color-ninesz), 0.08);
+            color: var(--text-muted);
+        }
+
+        .inst-chip[data-val="VG"] {
+            border-color: rgba(var(--color-vg), 0.3);
+            background: rgba(var(--color-vg), 0.08);
+            color: var(--text-muted);
+        }
+
+        .inst-chip[data-val="NF"] {
+            border-color: rgba(var(--color-nf), 0.3);
+            background: rgba(var(--color-nf), 0.08);
+            color: var(--text-muted);
+        }
+
+        .inst-chip[data-val="PMH"] {
+            border-color: rgba(var(--color-pmh), 0.3);
+            background: rgba(var(--color-pmh), 0.08);
+            color: var(--text-muted);
+        }
+
+        .inst-chip[data-val="NKSK"] {
+            border-color: rgba(var(--color-nksk), 0.3);
+            background: rgba(var(--color-nksk), 0.08);
+            color: var(--text-muted);
+        }
+
+        .inst-chip[data-val="RSZSZK"] {
+            border-color: rgba(var(--color-rszszk), 0.3);
+            background: rgba(var(--color-rszszk), 0.08);
+            color: var(--text-muted);
+        }
+
+        .inst-chip[data-val="RKTÖT"] {
+            border-color: rgba(var(--color-rktöt), 0.3);
+            background: rgba(var(--color-rktöt), 0.08);
+            color: var(--text-muted);
+        }
+
+        .inst-chip[data-val="NVÖ"] {
+            border-color: rgba(var(--color-nvo), 0.3);
+            background: rgba(var(--color-nvo), 0.08);
+            color: var(--text-muted);
+        }
+
+        /* Active States (selected) */
+        .inst-chip[data-val="ALL"].active {
+            border-color: var(--primary) !important;
+            background: rgba(251, 191, 36, 0.45) !important;
+            color: #fff !important;
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
+        }
+
+        .inst-chip[data-val="NINESZ"].active {
+            border-color: rgb(var(--color-ninesz)) !important;
+            background: rgba(var(--color-ninesz), 0.45) !important;
+            color: #fff !important;
+            box-shadow: 0 0 12px rgba(var(--color-ninesz), 0.4);
+        }
+
+        .inst-chip[data-val="VG"].active {
+            border-color: rgb(var(--color-vg)) !important;
+            background: rgba(var(--color-vg), 0.45) !important;
+            color: #fff !important;
+            box-shadow: 0 0 12px rgba(var(--color-vg), 0.4);
+        }
+
+        .inst-chip[data-val="NF"].active {
+            border-color: rgb(var(--color-nf)) !important;
+            background: rgba(var(--color-nf), 0.45) !important;
+            color: #fff !important;
+            box-shadow: 0 0 12px rgba(var(--color-nf), 0.4);
+        }
+
+        .inst-chip[data-val="PMH"].active {
+            border-color: rgb(var(--color-pmh)) !important;
+            background: rgba(var(--color-pmh), 0.45) !important;
+            color: #fff !important;
+            box-shadow: 0 0 12px rgba(var(--color-pmh), 0.5);
+        }
+
+        .inst-chip[data-val="NKSK"].active {
+            border-color: rgb(var(--color-nksk)) !important;
+            background: rgba(var(--color-nksk), 45) !important;
+            color: #fff !important;
+            box-shadow: 0 0 12px rgba(var(--color-nksk), 0.4);
+        }
+
+        .inst-chip[data-val="RSZSZK"].active {
+            border-color: rgb(var(--color-rszszk)) !important;
+            background: rgba(var(--color-rszszk), 0.45) !important;
+            color: #fff !important;
+            box-shadow: 0 0 12px rgba(var(--color-rszszk), 0.4);
+        }
+
+        .inst-chip[data-val="RKTÖT"].active {
+            border-color: rgb(var(--color-rktöt)) !important;
+            background: rgba(var(--color-rktöt), 0.45) !important;
+            color: #fff !important;
+            box-shadow: 0 0 12px rgba(var(--color-rktöt), 0.5);
+        }
+
+        .inst-chip[data-val="NVÖ"].active {
+            border-color: rgb(var(--color-nvo)) !important;
+            background: rgba(var(--color-nvo), 0.45) !important;
+            color: #fff !important;
+            box-shadow: 0 0 12px rgba(var(--color-nvo), 0.4);
         }
 
         .inst-chip input {
@@ -222,35 +639,77 @@
         }
 
         .btn {
-            padding: 0.8rem 1.5rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
             border: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.85rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .btn-primary {
             background: var(--primary);
             color: #000;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 0 #b45309, 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary:active {
+            box-shadow: 0 1px 0 #b45309;
         }
 
         .btn-outline {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border);
             color: #fff;
+            backdrop-filter: blur(4px);
         }
 
         .btn-sm {
-            padding: 0.4rem 0.6rem;
-            font-size: 0.8rem;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            border-radius: 6px;
         }
 
+        .btn-view:hover {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border-color: #3b82f6;
+        }
+
+        .btn-edit:hover {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        /* Table & GLASS TAGS */
         .table-wrap {
             overflow-x: auto;
-            border-radius: 8px;
+            border-radius: 12px;
             border: 1px solid var(--border);
         }
 
@@ -260,75 +719,317 @@
         }
 
         th {
-            background: #0f172a;
-            padding: 1rem;
-            font-size: 0.75rem;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 0.8rem 0.6rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
             text-transform: uppercase;
             border-bottom: 1px solid var(--border);
+            text-align: left;
+            letter-spacing: 0.5px;
         }
 
         td {
-            padding: 1rem;
+            padding: 0.8rem 0.6rem;
             border-bottom: 1px solid var(--border);
+            vertical-align: middle;
         }
 
-        tr:hover td {
-            background: rgba(255, 255, 255, 0.03);
+        /* Column Widths */
+        .col-type,
+        .col-cat {
+            width: 110px;
+        }
+
+        .col-name {
+            width: 200px;
+            max-width: 200px;
+        }
+
+        .col-inst {
+            width: 180px;
+        }
+
+        .col-date {
+            width: 110px;
+        }
+
+        .col-actions-merged {
+            width: 100px;
+            text-align: center !important;
+        }
+
+        .tag-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            width: 100%;
         }
 
         .tag {
-            padding: 4px 10px;
+            padding: 4px 2px;
             border-radius: 4px;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             font-weight: 800;
-            color: #fff;
-            margin-right: 4px;
+            color: #000 !important;
+            display: block;
+            width: 100%;
+            text-align: center;
+            white-space: nowrap;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
         }
 
         .tag-all {
-            background: linear-gradient(45deg, #fbbf24, #10b981);
-            color: #000;
+            background: rgba(251, 191, 36, 0.5) !important;
+            grid-column: span 2;
         }
 
         .tag-ninesz {
-            background: var(--color-ninesz);
+            background-color: rgba(var(--color-ninesz), 0.5) !important;
         }
 
         .tag-vg {
-            background: var(--color-vg);
+            background-color: rgba(var(--color-vg), 0.5) !important;
         }
 
         .tag-nf {
-            background: var(--color-nf);
+            background-color: rgba(var(--color-nf), 0.5) !important;
         }
 
         .tag-pmh {
-            background: var(--color-pmh);
+            background-color: rgba(var(--color-pmh), 0.5) !important;
         }
 
         .tag-nksk {
-            background: var(--color-nksk);
+            background-color: rgba(var(--color-nksk), 0.5) !important;
         }
 
         .tag-rszszk {
-            background: var(--color-rszszk);
+            background-color: rgba(var(--color-rszszk), 0.5) !important;
         }
 
-        .tag-rktot {
-            background: var(--color-rktot);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+        .tag-rktöt {
+            background-color: rgba(var(--color-rktöt), 0.5) !important;
+        }
+
+        .tag-nvö {
+            background-color: rgba(var(--color-nvo), 0.5) !important;
+        }
+
+        .tag-cat-közvilágítás {
+            background-color: rgba(var(--cat-light), 0.5) !important;
+            border-color: rgba(var(--cat-light), 0.3) !important;
+        }
+
+        .tag-cat-fűtés {
+            background-color: rgba(var(--cat-heat), 0.5) !important;
+            border-color: rgba(var(--cat-heat), 0.3) !important;
+        }
+
+        .tag-cat-üzemszünet {
+            background-color: rgba(var(--cat-outage), 0.5) !important;
+            border-color: rgba(var(--cat-outage), 0.3) !important;
+        }
+
+        /* Utility Tags */
+        .tag-util-mvm {
+            background-color: #3b82f6 !important;
+        }
+
+        .tag-util-eon {
+            background-color: #ef4444 !important;
+        }
+
+        .tag-util-e2 {
+            background-color: #a855f7 !important;
+        }
+
+        .tag-util-drv {
+            background-color: #06b6d4 !important;
+        }
+
+        .tag-util-equans {
+            background-color: #f97316 !important;
+        }
+
+        .tag-type {
+            padding: 3px 10px;
+            font-size: 0.7rem;
+        }
+
+        .tag-type-üzenet {
+            background: rgba(var(--type-msg), 0.5) !important;
+            border-color: rgba(var(--type-msg), 0.3) !important;
+        }
+
+        .tag-type-számla {
+            background: rgba(var(--type-szamla), 0.5) !important;
+            border-color: rgba(var(--type-szamla), 0.3) !important;
+        }
+
+        .tag-type-szerződés {
+            background: rgba(var(--type-szerz), 0.5) !important;
+            border-color: rgba(var(--type-szerz), 0.3) !important;
+        }
+
+        .tag-type-tájékoztatás {
+            background: rgba(var(--type-taj), 0.5) !important;
+            border-color: rgba(var(--type-taj), 0.3) !important;
+        }
+
+        .tag-cat {
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+        }
+
+        .tag-cat-általános {
+            background: rgba(var(--cat-alt), 0.5) !important;
+            border-color: rgba(var(--cat-alt), 0.3) !important;
+        }
+
+        .tag-cat-pénzügyi {
+            background: rgba(var(--cat-penz), 0.5) !important;
+            border-color: rgba(var(--cat-penz), 0.3) !important;
+        }
+
+        .tag-cat-műszaki {
+            background: rgba(var(--cat-musz), 0.5) !important;
+            border-color: rgba(var(--cat-musz), 0.3) !important;
+        }
+
+        .comment-cell {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-style: italic;
+            max-width: 450px;
+            min-width: 300px;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            white-space: normal;
+        }
+
+        /* Attachment Tags */
+        .ext-tag {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: #fff;
+            margin-right: 3px;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+
+        .ext-pdf {
+            background: #ef4444;
+        }
+
+        .ext-jpg,
+        .ext-jpeg,
+        .ext-png {
+            background: #3b87f6;
+        }
+
+        .ext-html {
+            background: #0ea5e9;
+        }
+
+        .ext-other {
+            background: #64748b;
+        }
+
+        /* Edit Modal Attachment List */
+        .file-manager-list {
+            margin-top: 1rem;
+            display: grid;
+            gap: 8px;
+        }
+
+        .file-manager-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .file-manager-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name-text {
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            opacity: 0.9;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .action-btn.rename:hover {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .action-btn.delete:hover {
+            background: var(--danger);
+            color: #fff;
         }
 
         .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.8);
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 200;
-            padding: 2rem;
+            z-index: 500;
+            padding: 1rem;
+            backdrop-filter: blur(6px);
         }
 
         .modal.active {
@@ -336,23 +1037,24 @@
         }
 
         .modal-content {
-            background: var(--bg-card);
+            background: rgba(30, 41, 59, 0.98);
             width: 100%;
             max-width: 900px;
-            max-height: 90vh;
-            border-radius: var(--radius);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            border-radius: 12px;
             border: 1px solid var(--border);
+            animation: modalIn 0.3s ease;
         }
 
-        .modal-body {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
+        @keyframes modalIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .modal-header {
@@ -363,62 +1065,158 @@
             align-items: center;
         }
 
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
         .modal-footer {
             padding: 1rem;
             border-top: 1px solid var(--border);
             text-align: right;
         }
 
-        iframe {
-            width: 100%;
-            height: 600px;
-            border: none;
-            border-radius: 4px;
+        .toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .msg-bubble {
-            background: var(--bg-input);
+        .toast {
+            background: rgba(16, 185, 129, 0.9);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toastIn 0.4s forwards;
+        }
+
+        @keyframes toastIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes toastOut {
+            to {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+        }
+
+        iframe {
+            width: 100%;
+            height: 500px;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .footer {
+            margin-top: 4rem;
             padding: 2rem;
-            border-radius: 12px;
-            border-left: 5px solid var(--primary);
-            font-size: 1.1rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .gold-text {
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            text-transform: uppercase;
+            filter: drop-shadow(0 0 2px rgba(251, 191, 36, 0.4));
+            display: inline-block;
+        }
+
+        .select-filter {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            border-radius: 4px;
+            padding: 2px 4px;
+            margin-top: 5px;
+            width: 100%;
+            cursor: pointer;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .select-filter:hover {
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        .select-filter option {
+            background: #1e293b;
+            color: #fff;
         }
     </style>
 </head>
 
 <body>
 
+    <div class="toast-container" id="toast-container"></div>
+
     <nav class="navbar">
-        <div class="brand">
-            <i class="fa-solid fa-folder-tree"></i>
-            NEO <span style="font-weight: 300; margin-left:8px; color: var(--text-muted);">Irattár & Üzenőfal</span>
+        <div class="brand" onclick="switchView('main', document.querySelector('.nav-link'))"><i
+                class="fa-solid fa-cube"></i> NEO <span
+                style="font-weight:300; font-size:0.8rem; margin-left:5px; opacity:0.7;">e-Irattár & Üzenőfal</span>
         </div>
         <div class="nav-links">
-            <button class="nav-link active" onclick="switchView('main', this)">Üzenőfal & Beküldés</button>
-            <button class="nav-link" onclick="switchView('archive', this)">Archívum</button>
+            <button class="nav-link active" onclick="switchView('main', this)"><i class="fa-solid fa-message"></i>
+                Üzenőfal</button>
+            <button class="nav-link" onclick="switchView('archive', this)"><i class="fa-solid fa-box-archive"></i>
+                e-Irattár</button>
+            <button class="nav-link" onclick="switchView('meter', this)"><i class="fa-solid fa-gauge"></i>
+                Mérőállás</button>
+            <button class="nav-link" onclick="switchView('registry', this)"><i class="fa-solid fa-folder-open"></i>
+                Nyilvántartás</button>
+            <button class="nav-link" onclick="switchView('phonebook', this)"><i class="fa-solid fa-address-book"></i>
+                Kapcsolatok</button>
+        </div>
+        <div id="live-clock" class="clock-container">
+            <i class="fa-solid fa-clock"></i>
+            <span id="clock-text">-- : -- : --</span>
         </div>
     </nav>
 
     <div class="container">
-
         <section id="view-main" class="view-section active">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fa-solid fa-pen-nib"></i>
-                    <h2>Új bejegyzés / Dokumentum feltöltés</h2>
-                </div>
+            <div id="featured-container" class="featured-grid"></div>
 
+            <div class="card">
+                <div class="card-header"><i class="fa-solid fa-cloud-upload"></i>
+                    <h2>Beküldés</h2>
+                </div>
                 <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-                    <i class="fa-solid fa-paperclip"></i>
-                    <p id="file-status">Fájl csatolása (opcionális)</p>
-                    <input type="file" id="file-input" style="display: none;" onchange="updateFileStatus(this)">
+                    <p id="file-status">Fájlok csatolása (max 10 db, max 20MB/fájl) (nem kötelező)</p>
+                    <input type="file" id="file-input" multiple style="display: none;"
+                        onchange="updateFileStatus(this)">
                 </div>
 
                 <div class="form-grid">
-                    <div>
-                        <label class="label">Cím / Tárgy</label>
-                        <input type="text" class="input" id="item-title" placeholder="A bejegyzés címe">
-                    </div>
+                    <div><label class="label">Cím</label><input type="text" class="input" id="item-title"
+                            placeholder="Felhívás szerződéskötésre"></div>
                     <div>
                         <label class="label">Típus</label>
                         <select class="select" id="item-type">
@@ -434,44 +1232,168 @@
                             <option value="Általános">Általános</option>
                             <option value="Pénzügyi">Pénzügyi</option>
                             <option value="Műszaki">Műszaki</option>
+                            <option value="Fűtés">Fűtés</option>
+                            <option value="Üzemszünet">Üzemszünet</option>
+                            <option value="Közvilágítás">Közvilágítás</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label">Ügyfél</label>
+                        <select class="select" id="item-utility">
+                            <option value="">- Nincs -</option>
+                            <option value="E2">E2</option>
+                            <option value="E.ON">E.ON</option>
+                            <option value="MVM">MVM</option>
+                            <option value="DRV">DRV</option>
+                            <option value="Equans">Equans</option>
                         </select>
                     </div>
                 </div>
 
-                <label class="label">Érintett Intézmények</label>
+                <!-- Contract Details Section (Conditional) -->
+                <div id="contract-fields"
+                    style="display: none; border: 1px dashed var(--primary); padding: 1.2rem; border-radius: 12px; margin-bottom: 1.5rem; background: rgba(251, 191, 36, 0.03);">
+                    <h3
+                        style="font-size: 0.85rem; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px;">
+                        <i class="fa-solid fa-file-contract"></i> Szerződéses Paraméterek
+                    </h3>
+                    <div class="form-grid">
+                        <div>
+                            <label class="label">Várható éves mennyiség</label>
+                            <div style="display:flex; gap:5px">
+                                <input type="text" class="input" id="item-contract-qty" style="flex:1" placeholder="0">
+                                <select class="select" id="item-contract-qty-unit" style="width:85px">
+                                    <option value="m3">m3</option>
+                                    <option value="kWh">kWh</option>
+                                    <option value="MJ">MJ</option>
+                                    <option value="hó">hó</option>
+                                    <option value="db">db</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="label">Egységár (nettó)</label>
+                            <div style="display:flex; gap:5px">
+                                <input type="text" class="input" id="item-contract-price" style="flex:1"
+                                    placeholder="0">
+                                <select class="select" id="item-contract-price-unit" style="width:105px">
+                                    <option value="Ft/m3">Ft/m3</option>
+                                    <option value="Ft/kWh">Ft/kWh</option>
+                                    <option value="Ft/MJ">Ft/MJ</option>
+                                    <option value="Ft/hó">Ft/hó</option>
+                                    <option value="Ft/db">Ft/db</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="label">Teljes szerződéses érték (bruttó)</label>
+                            <input type="text" class="input" id="item-contract-total" readonly
+                                style="background: rgba(0,0,0,0.2); font-weight: 800; color: var(--primary);"
+                                value="0 Ft">
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <label class="label">Szerződés típusa</label>
+                        <select class="select" id="item-contract-subtype">
+                            <option value="Általános">Általános</option>
+                            <option value="Áram kereskedelmi">Áram kereskedelmi</option>
+                            <option value="Gáz kereskedelmi">Gáz kereskedelmi</option>
+                            <option value="Szolgáltatási szerződés">Szolgáltatási szerződés</option>
+                            <option value="Vállalkozási szerződés">Vállalkozási szerződés</option>
+                            <option value="Hálózat-használati szerződés">Hálózat-használati szerződés</option>
+                            <option value="Hálózatcsatlakozási szerződés">Hálózatcsatlakozási szerződés</option>
+                            <option value="Egyetemes szolgáltatási szerződés">Egyetemes szolgáltatási szerződés</option>
+                        </select>
+                    </div>
+
+                    <!-- Monthly Grid (Conditional) -->
+                    <div id="monthly-grid-section"
+                        style="display: none; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(251, 191, 36, 0.2);">
+                        <label class="label" style="margin-bottom: 1rem;">Havi tervezett mennyiségek (12 hónap)</label>
+                        <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;">
+                            <div><label class="label" style="font-size:0.6rem; text-align:center">Jan</label><input
+                                    type="text" class="input m-input" data-m="1" placeholder="Pl. 5e"
+                                    style="padding:4px; text-align:center"></div>
+                            <div><label class="label" style="font-size:0.6rem; text-align:center">Feb</label><input
+                                    type="text" class="input m-input" data-m="2" placeholder="Pl. 5e"
+                                    style="padding:4px; text-align:center"></div>
+                            <div><label class="label" style="font-size:0.6rem; text-align:center">Már</label><input
+                                    type="text" class="input m-input" data-m="3" placeholder="Pl. 5e"
+                                    style="padding:4px; text-align:center"></div>
+                            <div><label class="label" style="font-size:0.6rem; text-align:center">Ápr</label><input
+                                    type="text" class="input m-input" data-m="4" placeholder="Pl. 5e"
+                                    style="padding:4px; text-align:center"></div>
+                            <div><label class="label" style="font-size:0.6rem; text-align:center">Máj</label><input
+                                    type="text" class="input m-input" data-m="5" placeholder="Pl. 5e"
+                                    style="padding:4px; text-align:center"></div>
+                            <div><label class="label" style="font-size:0.6rem; text-align:center">Jún</label><input
+                                    type="text" class="input m-input" data-m="6" placeholder="Pl. 5e"
+                                    style="padding:4px; text-align:center"></div>
+                            <div><label class="label" style="font-size:0.6rem; text-align:center">Júl</label><input
+                                    type="text" class="input m-input" data-m="7" placeholder="Pl. 5e"
+                                    style="padding:4px; text-align:center"></div>
+                            <div><label class="label" style="font-size:0.6rem; text-align:center">Aug</label><input
+                                    type="text" class="input m-input" data-m="8" placeholder="Pl. 5e"
+                                    style="padding:4px; text-align:center"></div>
+                            <div><label class="label" style="font-size:0.6rem; text-align:center">Szep</label><input
+                                    type="text" class="input m-input" data-m="9" placeholder="Pl. 5e"
+                                    style="padding:4px; text-align:center"></div>
+                            <div><label class="label" style="font-size:0.6rem; text-align:center">Okt</label><input
+                                    type="text" class="input m-input" data-m="10" placeholder="Pl. 5e"
+                                    style="padding:4px; text-align:center"></div>
+                            <div><label class="label" style="font-size:0.6rem; text-align:center">Nov</label><input
+                                    type="text" class="input m-input" data-m="11" placeholder="Pl. 5e"
+                                    style="padding:4px; text-align:center"></div>
+                            <div><label class="label" style="font-size:0.6rem; text-align:center">Dec</label><input
+                                    type="text" class="input m-input" data-m="12" placeholder="Pl. 5e"
+                                    style="padding:4px; text-align:center"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <label class="label">Intézmények</label>
                 <div class="inst-grid">
-                    <label class="inst-chip"><input type="checkbox" value="ALL" onchange="toggleAll(this)">
-                        MINDENKI</label>
-                    <label class="inst-chip"><input type="checkbox" name="inst" value="NINESZ"> NINESZ</label>
-                    <label class="inst-chip"><input type="checkbox" name="inst" value="VG"> VG</label>
-                    <label class="inst-chip"><input type="checkbox" name="inst" value="NF"> NF</label>
-                    <label class="inst-chip"><input type="checkbox" name="inst" value="PMH"> PMH</label>
-                    <label class="inst-chip"><input type="checkbox" name="inst" value="NKSK"> NKSK</label>
-                    <label class="inst-chip"><input type="checkbox" name="inst" value="RSZSZK"> RSZSZK</label>
-                    <label class="inst-chip"><input type="checkbox" name="inst" value="RKTÖT"> RKTÖT</label>
+                    <label class="inst-chip" data-val="ALL"><input type="checkbox" value="ALL"
+                            onchange="handleInstChange(this)"> MINDENKI</label>
+                    <label class="inst-chip" data-val="NINESZ"><input type="checkbox" name="inst" value="NINESZ"
+                            onchange="handleInstChange(this)"> NINESZ</label>
+                    <label class="inst-chip" data-val="VG"><input type="checkbox" name="inst" value="VG"
+                            onchange="handleInstChange(this)"> VG</label>
+                    <label class="inst-chip" data-val="NF"><input type="checkbox" name="inst" value="NF"
+                            onchange="handleInstChange(this)"> NF</label>
+                    <label class="inst-chip" data-val="PMH"><input type="checkbox" name="inst" value="PMH"
+                            onchange="handleInstChange(this)"> PMH</label>
+                    <label class="inst-chip" data-val="NKSK"><input type="checkbox" name="inst" value="NKSK"
+                            onchange="handleInstChange(this)"> NKSK</label>
+                    <label class="inst-chip" data-val="RSZSZK"><input type="checkbox" name="inst" value="RSZSZK"
+                            onchange="handleInstChange(this)"> RSZSZK</label>
+                    <label class="inst-chip" data-val="RKTÖT"><input type="checkbox" name="inst" value="RKTÖT"
+                            onchange="handleInstChange(this)"> RKTÖT</label>
+                    <label class="inst-chip" data-val="NVÖ"><input type="checkbox" name="inst" value="NVÖ"
+                            onchange="handleInstChange(this)"> NVÖ</label>
                 </div>
 
-                <label class="label">Bejegyzés tartalma / Megjegyzés</label>
-                <textarea class="textarea" id="item-body" placeholder="Írja ide az üzenetet..."></textarea>
-
-                <div style="text-align: right; margin-top:1.5rem;">
-                    <button id="submit-btn" class="btn btn-primary" onclick="submitItem()">Beküldés</button>
-                </div>
+                <textarea class="textarea" id="item-body" rows="3" placeholder="Megjegyzés..."></textarea>
+                <div style="text-align: right; margin-top:1rem;"><button id="submit-btn" class="btn btn-primary"
+                        onclick="submitItem()">Beküldés</button></div>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    <h2>Friss bejegyzések</h2>
+                    <h2>Friss lista</h2>
                 </div>
                 <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
                                 <th>Cím</th>
-                                <th>Típus</th>
-                                <th>Intézmények</th>
-                                <th>Dátum</th>
-                                <th>Műveletek</th>
+                                <th class="col-type">Típus</th>
+                                <th class="col-cat">Kategória</th>
+                                <th class="col-util">Ügyfél</th>
+                                <th class="col-inst">Intézmények</th>
+                                <th>Leírás</th>
+                                <th>Mellékletek</th>
+                                <th class="col-actions-merged">Dátum & Műveletek</th>
                             </tr>
                         </thead>
                         <tbody id="recent-list"></tbody>
@@ -480,19 +1402,213 @@
             </div>
         </section>
 
-        <section id="view-archive" class="view-section">
+        <section id="view-meter" class="view-section">
             <div class="card">
-                <input type="text" class="input" id="search-box" placeholder="Keresés az archívumban..."
-                    oninput="renderArchive()">
-                <div class="table-wrap" style="margin-top:2rem;">
+                <div class="card-header"><i class="fa-solid fa-gauge-high"></i>
+                    <h2>Mérőállás rögzítő</h2>
+                </div>
+                <div class="form-grid">
+                    <div><label class="label">Fogyasztási hely címe</label><input type="text" class="input"
+                            id="meter-address" placeholder="Pl. Petőfi u. 1."></div>
+                    <div><label class="label">POD azonosító</label><input type="text" class="input" id="meter-pod"
+                            placeholder="Pl. HU000..."></div>
+                    <div><label class="label">Óra gyári száma</label><input type="text" class="input" id="meter-serial">
+                    </div>
+                    <div><label class="label">Mérőóra állása</label><input type="number" class="input"
+                            id="meter-reading"></div>
+                    <div>
+                        <label class="label">Mértékegység</label>
+                        <select class="select" id="meter-unit">
+                            <option value="m3">m3 (Gáz)</option>
+                            <option value="kWh">kWh (Villany)</option>
+                            <option value="GJ">Hőmn. (GJ)</option>
+                            <option value="m3 (Víz)">Víz (m3)</option>
+                            <option value="db">Darab (db)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label">Fénykép csatolása</label>
+                        <input type="file" id="meter-photo" style="display:none" accept="image/*"
+                            onchange="updateMeterPhotoLabel(this)">
+                        <button class="btn btn-outline" style="width:100%"
+                            onclick="document.getElementById('meter-photo').click()">
+                            <i class="fa-solid fa-camera"></i> <span id="meter-photo-label">Fotó kiválasztása</span>
+                        </button>
+                    </div>
+                    <div><label class="label">Rögzítés dátuma</label><input type="date" class="input" id="meter-date">
+                    </div>
+                </div>
+                <div style="text-align: right;"><button id="meter-btn" class="btn btn-primary"
+                        onclick="submitReading()">Rögzítés</button></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Rögzített állások</h2>
+                </div>
+                <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
                                 <th>Cím</th>
-                                <th>Típus</th>
-                                <th>Intézmények</th>
+                                <th>POD</th>
+                                <th>Gyári szám</th>
+                                <th>Állás</th>
+                                <th>Egység</th>
                                 <th>Dátum</th>
+                                <th>Fotó</th>
+                                <th>Művelet</th>
+                            </tr>
+                        </thead>
+                        <tbody id="meter-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        </section>
+
+        <section id="view-registry" class="view-section">
+            <div class="card">
+                <div class="card-header" style="justify-content: space-between;">
+                    <h2><i class="fa-solid fa-folder-open"></i> Nyilvántartás</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openRegistryModal(null)">+ Új rekord
+                        hozzáadása</button>
+                </div>
+
+                <div class="registry-tabs"
+                    style="display:flex; gap:10px; margin-bottom:1rem; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom:10px;">
+                    <button class="nav-link active" onclick="switchRegistryTab('Áram', this)">Áram</button>
+                    <button class="nav-link" onclick="switchRegistryTab('Gáz', this)">Gáz</button>
+                    <button class="nav-link" onclick="switchRegistryTab('Víz', this)">Víz</button>
+                    <button class="nav-link" onclick="switchRegistryTab('Távhő', this)">Távhő</button>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-search"
+                            style="position: absolute; left: 15px; top: 12px; color: var(--text-muted);"></i>
+                        <input type="text" class="input" id="registry-search"
+                            placeholder="Keresés a nyilvántartás teljes tartalmában..." oninput="renderRegistryTable()"
+                            style="padding-left: 45px; font-size: 1rem;">
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>POD / Mérési Pont</th>
+                                <th>Cím</th>
+                                <th>Szerződött mennyiség</th>
+                                <th>Érvényesség kezdete</th>
+                                <th>Érvényesség vége</th>
+                                <th>Státusz</th>
                                 <th>Műveletek</th>
+                            </tr>
+                        </thead>
+                        <tbody id="registry-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-phonebook" class="view-section">
+            <div class="card">
+                <div class="card-header" style="justify-content: space-between;">
+                    <h2><i class="fa-solid fa-address-book"></i> Kapcsolatok</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openPhonebookModal(null)">+ Új kapcsolat</button>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-search"
+                            style="position: absolute; left: 15px; top: 12px; color: var(--text-muted);"></i>
+                        <input type="text" class="input" id="phonebook-search"
+                            placeholder="Keresés bármilyen adatra (név, cég, telefonszám...)"
+                            oninput="renderPhonebookTable()" style="padding-left: 45px; font-size: 1rem;">
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Név</th>
+                                <th>Titulus / Kör</th>
+                                <th>Szervezet / Cég</th>
+                                <th>Részleg</th>
+                                <th>Mobiltelefon</th>
+                                <th>Vezetékes telefon</th>
+                                <th>E-mail</th>
+                                <th>Műveletek</th>
+                            </tr>
+                        </thead>
+                        <tbody id="phonebook-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-archive" class="view-section">
+            <div class="card">
+                <input type="text" class="input" id="search-box" placeholder="Keresés..." oninput="renderArchive()">
+                <div class="table-wrap" style="margin-top:1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cím</th>
+                                <th class="col-type">
+                                    Típus<br>
+                                    <select class="select-filter" id="filter-type" onchange="renderArchive()">
+                                        <option value="">Összes</option>
+                                        <option value="Üzenet">Üzenet</option>
+                                        <option value="Számla">Számla</option>
+                                        <option value="Szerződés">Szerződés</option>
+                                        <option value="Tájékoztatás">Tájékoztatás</option>
+                                    </select>
+                                </th>
+                                <th class="col-cat">
+                                    Kategória<br>
+                                    <select class="select-filter" id="filter-cat" onchange="renderArchive()">
+                                        <option value="">Összes</option>
+                                        <option value="Általános">Általános</option>
+                                        <option value="Pénzügyi">Pénzügyi</option>
+                                        <option value="Műszaki">Műszaki</option>
+                                        <option value="Fűtés">Fűtés</option>
+                                        <option value="Üzemszünet">Üzemszünet</option>
+                                        <option value="Közvilágítás">Közvilágítás</option>
+                                    </select>
+                                </th>
+                                <th class="col-inst">
+                                    Intézmények<br>
+                                    <select class="select-filter" id="filter-inst" onchange="renderArchive()">
+                                        <option value="">Összes</option>
+                                        <option value="ALL">Mindenki</option>
+                                        <option value="NINESZ">NINESZ</option>
+                                        <option value="VG">VG</option>
+                                        <option value="NF">NF</option>
+                                        <option value="PMH">PMH</option>
+                                        <option value="NKSK">NKSK</option>
+                                        <option value="RSZSZK">RSZSZK</option>
+                                        <option value="RKTÖT">RKTÖT</option>
+                                        <option value="NVÖ">NVÖ</option>
+                                    </select>
+                                </th>
+                                <th class="col-util">
+                                    Ügyfél<br>
+                                    <select class="select-filter" id="filter-util" onchange="renderArchive()">
+                                        <option value="">Összes</option>
+                                        <option value="E2">E2</option>
+                                        <option value="E.ON">E.ON</option>
+                                        <option value="MVM">MVM</option>
+                                        <option value="DRV">DRV</option>
+                                        <option value="Equans">Equans</option>
+                                    </select>
+                                </th>
+                                <th>Leírás</th>
+                                <th>Mellékletek</th>
+                                <th class="col-actions-merged">Dátum & Műveletek</th>
                             </tr>
                         </thead>
                         <tbody id="archive-list"></tbody>
@@ -500,167 +1616,750 @@
                 </div>
             </div>
         </section>
-
+        <footer class="footer">
+            <p>
+                <span class="gold-text">N</span>agyatád <span class="gold-text">E</span>nergetikai <span
+                    class="gold-text">O</span>ldala -
+                <span class="gold-text">PMH</span> & <span class="gold-text">NVÖ</span> &
+                <span class="gold-text">K</span>öltségvetési szervek közös <span class="gold-text">M</span>űszaki &
+                <span class="gold-text">P</span>énzügyi irattárja.
+            </p>
+        </footer>
     </div>
 
-    <!-- MODAL -->
+    <!-- Modals -->
     <div class="modal" id="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modal-title">Megtekintés</h3>
-                <button class="btn btn-outline btn-sm" onclick="closeModal()">×</button>
+                <h3 id="modal-title"></h3><button class="nav-link" onclick="closeModal()">×</button>
             </div>
             <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Bejegyzés szerkesztése</h3>
+                <button class="nav-link" onclick="closeEditModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div>
+                        <label class="label">Cím</label>
+                        <input type="text" class="input" id="edit-title">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <label class="label">Típus</label>
+                            <select class="select" id="edit-type">
+                                <option value="Üzenet">Üzenet</option>
+                                <option value="Számla">Számla</option>
+                                <option value="Szerződés">Szerződés</option>
+                                <option value="Tájékoztatás">Tájékoztatás</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="label">Kategória</label>
+                            <select class="select" id="edit-cat">
+                                <option value="Általános">Általános</option>
+                                <option value="Pénzügyi">Pénzügyi</option>
+                                <option value="Műszaki">Műszaki</option>
+                                <option value="Fűtés">Fűtés</option>
+                                <option value="Üzemszünet">Üzemszünet</option>
+                                <option value="Közvilágítás">Közvilágítás</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="label">Ügyfél</label>
+                            <select class="select" id="edit-util">
+                                <option value="">- Nincs -</option>
+                                <option value="E2">E2</option>
+                                <option value="E.ON">E.ON</option>
+                                <option value="MVM">MVM</option>
+                                <option value="DRV">DRV</option>
+                                <option value="Equans">Equans</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Edit Contract Specifics (Conditional) -->
+                    <div id="edit-contract-fields"
+                        style="display: none; border: 1px dashed var(--primary); padding: 1rem; border-radius: 8px; background: rgba(251, 191, 36, 0.03);">
+                        <div class="form-grid">
+                            <div>
+                                <label class="label">Éves mennyiség</label>
+                                <div style="display:flex; gap:5px">
+                                    <input type="text" class="input" id="edit-contract-qty" style="flex:1">
+                                    <select class="select" id="edit-contract-qty-unit" style="width:80px">
+                                        <option value="m3">m3</option>
+                                        <option value="kWh">kWh</option>
+                                        <option value="MJ">MJ</option>
+                                        <option value="hó">hó</option>
+                                        <option value="db">db</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="label">Egységár (nettó)</label>
+                                <div style="display:flex; gap:5px">
+                                    <input type="text" class="input" id="edit-contract-price" style="flex:1">
+                                    <select class="select" id="edit-contract-price-unit" style="width:105px">
+                                        <option value="Ft/m3">Ft/m3</option>
+                                        <option value="Ft/kWh">Ft/kWh</option>
+                                        <option value="Ft/MJ">Ft/MJ</option>
+                                        <option value="Ft/hó">Ft/hó</option>
+                                        <option value="Ft/db">Ft/db</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="label">Teljes szerződéses érték (nettó)</label>
+                                <input type="text" class="input" id="edit-contract-total" readonly
+                                    style="background: rgba(0,0,0,0.2); font-weight: 800; color: var(--primary);"
+                                    value="0 Ft">
+                            </div>
+                        </div>
+                        <div style="margin-top:10px">
+                            <label class="label">Szerződés típusa</label>
+                            <select class="select" id="edit-contract-subtype">
+                                <option value="Általános">Általános</option>
+                                <option value="Áram kereskedelmi">Áram kereskedelmi</option>
+                                <option value="Gáz kereskedelmi">Gáz kereskedelmi</option>
+                                <option value="Szolgáltatási szerződés">Szolgáltatási szerződés</option>
+                                <option value="Vállalkozási szerződés">Vállalkozási szerződés</option>
+                                <option value="Hálózat-használati szerződés">Hálózat-használati szerződés</option>
+                                <option value="Hálózatcsatlakozási szerződés">Hálózatcsatlakozási szerződés</option>
+                                <option value="Egyetemes szolgáltatási szerződés">Egyetemes szolgáltatási szerződés
+                                </option>
+                            </select>
+                        </div>
+                        <div id="edit-monthly-grid-section"
+                            style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(251, 191, 36, 0.2);">
+                            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px;">
+                                <div><label class="label" style="font-size:0.5rem; text-align:center">Jan</label><input
+                                        type="text" class="input edit-m-input" data-m="1" placeholder="Pl. 5e"
+                                        style="padding:2px; text-align:center; font-size:0.8rem"></div>
+                                <div><label class="label" style="font-size:0.5rem; text-align:center">Feb</label><input
+                                        type="text" class="input edit-m-input" data-m="2" placeholder="Pl. 5e"
+                                        style="padding:2px; text-align:center; font-size:0.8rem"></div>
+                                <div><label class="label" style="font-size:0.5rem; text-align:center">Már</label><input
+                                        type="text" class="input edit-m-input" data-m="3" placeholder="Pl. 5e"
+                                        style="padding:2px; text-align:center; font-size:0.8rem"></div>
+                                <div><label class="label" style="font-size:0.5rem; text-align:center">Ápr</label><input
+                                        type="text" class="input edit-m-input" data-m="4" placeholder="Pl. 5e"
+                                        style="padding:2px; text-align:center; font-size:0.8rem"></div>
+                                <div><label class="label" style="font-size:0.5rem; text-align:center">Máj</label><input
+                                        type="text" class="input edit-m-input" data-m="5" placeholder="Pl. 5e"
+                                        style="padding:2px; text-align:center; font-size:0.8rem"></div>
+                                <div><label class="label" style="font-size:0.5rem; text-align:center">Jún</label><input
+                                        type="text" class="input edit-m-input" data-m="6" placeholder="Pl. 5e"
+                                        style="padding:2px; text-align:center; font-size:0.8rem"></div>
+                                <div><label class="label" style="font-size:0.5rem; text-align:center">Júl</label><input
+                                        type="text" class="input edit-m-input" data-m="7" placeholder="Pl. 5e"
+                                        style="padding:2px; text-align:center; font-size:0.8rem"></div>
+                                <div><label class="label" style="font-size:0.5rem; text-align:center">Aug</label><input
+                                        type="text" class="input edit-m-input" data-m="8" placeholder="Pl. 5e"
+                                        style="padding:2px; text-align:center; font-size:0.8rem"></div>
+                                <div><label class="label" style="font-size:0.5rem; text-align:center">Szep</label><input
+                                        type="text" class="input edit-m-input" data-m="9" placeholder="Pl. 5e"
+                                        style="padding:2px; text-align:center; font-size:0.8rem"></div>
+                                <div><label class="label" style="font-size:0.5rem; text-align:center">Okt</label><input
+                                        type="text" class="input edit-m-input" data-m="10" placeholder="Pl. 5e"
+                                        style="padding:2px; text-align:center; font-size:0.8rem"></div>
+                                <div><label class="label" style="font-size:0.5rem; text-align:center">Nov</label><input
+                                        type="text" class="input edit-m-input" data-m="11" placeholder="Pl. 5e"
+                                        style="padding:2px; text-align:center; font-size:0.8rem"></div>
+                                <div><label class="label" style="font-size:0.5rem; text-align:center">Dec</label><input
+                                        type="text" class="input edit-m-input" data-m="12" placeholder="Pl. 5e"
+                                        style="padding:2px; text-align:center; font-size:0.8rem"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label">Intézmények</label>
+                        <div class="inst-grid" id="edit-inst-grid"
+                            style="grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));">
+                            <label class="inst-chip" data-val="ALL"><input type="checkbox" value="ALL"
+                                    onchange="handleEditInstChange(this)"> MINDENKI</label>
+                            <label class="inst-chip" data-val="NINESZ"><input type="checkbox" name="edit-inst"
+                                    value="NINESZ" onchange="handleEditInstChange(this)"> NINESZ</label>
+                            <label class="inst-chip" data-val="VG"><input type="checkbox" name="edit-inst" value="VG"
+                                    onchange="handleEditInstChange(this)"> VG</label>
+                            <label class="inst-chip" data-val="NF"><input type="checkbox" name="edit-inst" value="NF"
+                                    onchange="handleEditInstChange(this)"> NF</label>
+                            <label class="inst-chip" data-val="PMH"><input type="checkbox" name="edit-inst" value="PMH"
+                                    onchange="handleEditInstChange(this)"> PMH</label>
+                            <label class="inst-chip" data-val="NKSK"><input type="checkbox" name="edit-inst"
+                                    value="NKSK" onchange="handleEditInstChange(this)"> NKSK</label>
+                            <label class="inst-chip" data-val="RSZSZK"><input type="checkbox" name="edit-inst"
+                                    value="RSZSZK" onchange="handleEditInstChange(this)"> RSZSZK</label>
+                            <label class="inst-chip" data-val="RKTÖT"><input type="checkbox" name="edit-inst"
+                                    value="RKTÖT" onchange="handleEditInstChange(this)"> RKTÖT</label>
+                            <label class="inst-chip" data-val="NVÖ"><input type="checkbox" name="edit-inst" value="NVÖ"
+                                    onchange="handleEditInstChange(this)"> NVÖ</label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label">Leírás / Megjegyzés</label>
+                        <textarea class="textarea" id="edit-body" rows="4"></textarea>
+                    </div>
+                    <div>
+                        <label class="label" style="margin-top: 10px; display: block;">Mellékletek
+                            kezelése</label>
+                        <div id="edit-file-list" class="file-manager-list" style="margin-top: 5px;"></div>
+                    </div>
+                </div>
+            </div>
             <div class="modal-footer">
-                <button class="btn btn-outline" onclick="closeModal()">Bezárás</button>
+                <button class="btn btn-outline" onclick="closeEditModal()">Mégse</button>
+                <button id="edit-save-btn" class="btn btn-primary">Változtatások mentése</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTRY MODAL -->
+    <div class="modal" id="registry-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="registry-modal-title">Új rekord hozzáadása</h3>
+                <button class="btn btn-outline btn-sm" onclick="closeRegistryModal()" style="padding: 4px 8px;"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="reg-id" value="">
+                <div class="form-grid">
+                    <div>
+                        <label class="label">Kategória</label>
+                        <select class="select" id="reg-category" onchange="updateCustomRegOptions(this.value)">
+                            <option value="Áram">Áram</option>
+                            <option value="Gáz">Gáz</option>
+                            <option value="Víz">Víz</option>
+                            <option value="Távhő">Távhő</option>
+                        </select>
+                    </div>
+                    <div><label class="label">POD / Mérési pont azonosító</label><input type="text" class="input"
+                            id="reg-pod"></div>
+                    <div style="grid-column: 1 / -1;"><label class="label">Fogyasztási Hely Címe</label><input
+                            type="text" class="input" id="reg-address"></div>
+                    <div><label class="label">Szerződött mennyiség</label>
+                        <div style="display:flex; gap:5px;">
+                            <input type="text" class="input" id="reg-qty" style="flex:1">
+                            <select class="select" id="reg-qty-unit" style="width:100px; display:none;">
+                                <option value="m3/év">m3/év</option>
+                                <option value="kWh/év">kWh/év</option>
+                            </select>
+                            <span class="input" style="flex:0; padding: 10px; background: rgba(0,0,0,0.2)"
+                                id="reg-qty-unit-display">kWh/év</span>
+                        </div>
+                    </div>
+                    <div><label class="label">Státusz</label>
+                        <select class="select" id="reg-status">
+                            <option value="Aktív">Aktív</option>
+                            <option value="Felmondva">Felmondva</option>
+                            <option value="Lejárt">Lejárt</option>
+                            <option value="Szünetel">Szünetel</option>
+                        </select>
+                    </div>
+                    <div><label class="label">Érvényesség kezdete</label><input type="date" class="input"
+                            id="reg-valid-from"></div>
+                    <div><label class="label">Érvényesség vége</label><input type="date" class="input"
+                            id="reg-valid-to"></div>
+                </div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:space-between;">
+                <div><button class="btn" style="background:var(--danger); color:white; display:none;" id="reg-del-btn"
+                        onclick="deleteRegistryItem()"><i class="fa-solid fa-trash"></i> Törlés</button></div>
+                <div>
+                    <button class="btn btn-outline" onclick="closeRegistryModal()">Mégse</button>
+                    <button class="btn btn-primary" onclick="saveRegistryItem()"><i class="fa-solid fa-floppy-disk"></i>
+                        Módosítás mentése</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHONEBOOK MODAL -->
+    <div class="modal" id="phonebook-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="phonebook-modal-title">Új kapcsolat hozzáadása</h3>
+                <button class="btn btn-outline btn-sm" onclick="closePhonebookModal()" style="padding: 4px 8px;"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="pb-id" value="">
+
+                <div style="display:flex; align-items:center; gap: 15px; margin-bottom: 20px;">
+                    <div id="pb-avatar"
+                        style="width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: var(--bg-body); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; text-transform: uppercase;">
+                        A</div>
+                    <div style="flex:1;"><label class="label">Név</label><input type="text" class="input" id="pb-name"
+                            style="font-size: 1.2rem; font-weight: bold;" oninput="updatePbAvatar()"></div>
+                </div>
+
+                <div class="form-grid">
+                    <div><label class="label">Titulus / Kör</label><input type="text" class="input" id="pb-title"></div>
+                    <div><label class="label">Szervezet / Cég</label><input type="text" class="input" id="pb-company">
+                    </div>
+                    <div style="grid-column: 1 / -1;"><label class="label">Részleg</label><input type="text"
+                            class="input" id="pb-department"></div>
+                    <div><label class="label"><i class="fa-solid fa-mobile-screen"></i> Mobiltelefon</label><input
+                            type="text" class="input" id="pb-mobile"></div>
+                    <div><label class="label"><i class="fa-solid fa-phone"></i> Vezetékes telefon</label><input
+                            type="text" class="input" id="pb-work"></div>
+                    <div style="grid-column: 1 / -1;"><label class="label"><i class="fa-solid fa-envelope"></i>
+                            E-mail</label><input type="email" class="input" id="pb-email"></div>
+                    <div style="grid-column: 1 / -1;"><label class="label">Megjegyzés</label><textarea class="textarea"
+                            id="pb-comment" rows="2"></textarea></div>
+                </div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:space-between;">
+                <div><button class="btn" style="background:var(--danger); color:white; display:none;" id="pb-del-btn"
+                        onclick="deletePhonebookItem()"><i class="fa-solid fa-trash"></i> Törlés</button></div>
+                <div>
+                    <button class="btn btn-outline" onclick="closePhonebookModal()">Mégse</button>
+                    <button class="btn btn-primary" onclick="savePhonebookItem()"><i
+                            class="fa-solid fa-floppy-disk"></i> Módosítás mentése</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALERT MODAL -->
+    <div class="modal" id="alert-modal">
+        <div class="modal-content" style="max-width:400px; text-align:center;">
+            <div class="modal-body">
+                <div id="alert-icon" style="font-size:2.5rem; margin-bottom:1rem"></div>
+                <h3 id="alert-title"></h3>
+                <p id="alert-msg" style="margin:1rem 0; opacity:0.8;"></p>
+                <div id="alert-extra"></div>
+                <button class="btn btn-primary" id="alert-btn" style="margin-top:1rem"
+                    onclick="closeAlert()">Rendben</button>
             </div>
         </div>
     </div>
 
     <script>
-        // SUPABASE CONFIGURATION
         const supabaseUrl = 'https://vzzhljxwpumygjxgiixo.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6emhsanh3cHVteWdqeGdpaXhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMDA1MzcsImV4cCI6MjA4Nzg3NjUzN30.hotJhijSf4dU2mfNoG1rFoREbZ_znRLgGUJS4cyRbSA';
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let localDb = [];
+        function getTagIcon(val, kind) {
+            const icons = {
+                // Típusok
+                'Üzenet': '<i class="fa-solid fa-comment-dots"></i>',
+                'Számla': '<i class="fa-solid fa-credit-card"></i>',
+                'Szerződés': '<i class="fa-solid fa-file-signature"></i>',
+                'Tájékoztatás': '<i class="fa-solid fa-circle-info"></i>',
+                // Kategóriák
+                'Általános': '<i class="fa-solid fa-folder-open"></i>',
+                'Pénzügyi': '<i class="fa-solid fa-money-bill-trend-up"></i>',
+                'Műszaki': '<i class="fa-solid fa-screwdriver-wrench"></i>',
+                'Fűtés': '<i class="fa-solid fa-fire-flame-curved"></i>',
+                'Üzemszünet': '<i class="fa-solid fa-plug-circle-xmark"></i>',
+                'Közvilágítás': '<i class="fa-solid fa-lightbulb"></i>'
+            };
+            return icons[val] ? icons[val] + ' ' : '';
+        }
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            await fetchItems();
+        let localDb = [];
+        let registryData = [];
+        let phonebookData = [];
+        let currentRegistryTab = 'Áram';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchItems();
+            fetchRegistry();
+            fetchPhonebook();
+            document.getElementById('meter-date').valueAsDate = new Date();
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            // Contract Form Logic
+            const itemType = document.getElementById('item-type');
+            const contractFields = document.getElementById('contract-fields');
+            const contractSubtype = document.getElementById('item-contract-subtype');
+            const monthlyGrid = document.getElementById('monthly-grid-section');
+            const qtyInput = document.getElementById('item-contract-qty');
+            const priceInput = document.getElementById('item-contract-price');
+            const totalInput = document.getElementById('item-contract-total');
+
+            itemType.addEventListener('change', () => {
+                contractFields.style.display = itemType.value === 'Szerződés' ? 'block' : 'none';
+            });
+
+            contractSubtype.addEventListener('change', () => {
+                const sub = contractSubtype.value;
+                monthlyGrid.style.display = (sub.includes('Áram') || sub.includes('Gáz')) ? 'block' : 'none';
+            });
+
+            const calcTotal = () => {
+                const q = parseAmount(qtyInput.value) || 0;
+                const p = parseAmount(priceInput.value) || 0;
+                totalInput.value = (q * p).toLocaleString('hu-HU') + ' Ft';
+            };
+
+            const sumMonthly = () => {
+                let total = 0;
+                document.querySelectorAll('.m-input').forEach(i => {
+                    total += parseAmount(i.value) || 0;
+                });
+                qtyInput.value = total;
+                calcTotal();
+            };
+
+            const calcEditTotal = () => {
+                const q = parseAmount(document.getElementById('edit-contract-qty').value) || 0;
+                const p = parseAmount(document.getElementById('edit-contract-price').value) || 0;
+                document.getElementById('edit-contract-total').value = (q * p).toLocaleString('hu-HU') + ' Ft';
+            };
+
+            const sumEditMonthly = () => {
+                let total = 0;
+                document.querySelectorAll('.edit-m-input').forEach(i => {
+                    total += parseAmount(i.value) || 0;
+                });
+                document.getElementById('edit-contract-qty').value = total;
+                calcEditTotal();
+            };
+
+            qtyInput.addEventListener('input', calcTotal);
+            priceInput.addEventListener('input', calcTotal);
+            document.querySelectorAll('.m-input').forEach(i => i.addEventListener('input', sumMonthly));
+
+            document.getElementById('edit-contract-qty').addEventListener('input', calcEditTotal);
+            document.getElementById('edit-contract-price').addEventListener('input', calcEditTotal);
+            document.querySelectorAll('.edit-m-input').forEach(i => i.addEventListener('input', sumEditMonthly));
         });
 
-        async function fetchItems() {
-            const { data, error } = await _supabase
-                .from('documents')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                console.error('Error fetching data:', error);
-            } else {
-                localDb = data;
-                renderRecent();
+        function parseAmount(val) {
+            if (!val) return 0;
+            if (typeof val === 'number') return val;
+            val = val.toString().toLowerCase().replace(/\s+/g, '').replace(/,/g, '.');
+            if (!/[em]/.test(val)) return parseFloat(val) || 0;
+            let total = 0, currentNum = '';
+            for (let i = 0; i < val.length; i++) {
+                let char = val[i];
+                if (char === 'm') { total += (parseFloat(currentNum) || 0) * 1000000; currentNum = ''; }
+                else if (char === 'e') { total += (parseFloat(currentNum) || 0) * 1000; currentNum = ''; }
+                else { currentNum += char; }
             }
+            if (currentNum) total += parseFloat(currentNum) || 0;
+            return total;
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('hu-HU', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\s/g, '');
+            const timeStr = now.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('clock-text').innerText = `${dateStr} | ${timeStr}`;
+        }
+
+        function updateMeterPhotoLabel(input) {
+            const label = document.getElementById('meter-photo-label');
+            label.innerText = input.files.length > 0 ? input.files[0].name : "Fotó kiválasztása";
+        }
+
+        async function fetchItems() {
+            const { data, error } = await _supabase.from('documents').select('*').order('created_at', { ascending: false });
+            if (!error) { localDb = data; renderRecent(); renderFeatured(); }
+            fetchReadings();
+        }
+
+        async function fetchReadings() {
+            const { data, error } = await _supabase.from('meter_readings').select('*').order('recorded_at', { ascending: false });
+            if (!error) renderMeterTable(data);
+        }
+
+        async function submitReading() {
+            const address = document.getElementById('meter-address').value;
+            const pod = document.getElementById('meter-pod').value;
+            const serial = document.getElementById('meter-serial').value;
+            const reading = document.getElementById('meter-reading').value;
+            const unit = document.getElementById('meter-unit').value;
+            const date = document.getElementById('meter-date').value;
+            const photoInput = document.getElementById('meter-photo');
+
+            if (!address || !reading) return showAlert('Figyelem', 'Cím és Mérőóra állás megadása kötelező!');
+            const btn = document.getElementById('meter-btn');
+            btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mentés...';
+
+            try {
+                let imagePath = null;
+                if (photoInput.files.length > 0) {
+                    const file = photoInput.files[0];
+                    imagePath = `readings/${Date.now()}_${file.name}`;
+                    await _supabase.storage.from('neo-vault').upload(imagePath, file);
+                }
+
+                const { error } = await _supabase.from('meter_readings').insert([{
+                    address, pod_id: pod, serial_number: serial, reading: parseFloat(reading), unit, recorded_at: date, image_path: imagePath
+                }]);
+
+                if (!error) {
+                    showToast("Mentve!"); fetchReadings();
+                    document.getElementById('meter-reading').value = '';
+                    photoInput.value = '';
+                    document.getElementById('meter-photo-label').innerText = "Fotó kiválasztása";
+                } else {
+                    showAlert('Adatbázis hiba', error.message, 'error');
+                }
+            } catch (err) {
+                showAlert('Hiba', err.message, 'error');
+            }
+            btn.disabled = false; btn.innerHTML = 'Rögzítés';
+        }
+
+        function renderMeterTable(data) {
+            const tbody = document.getElementById('meter-list');
+            tbody.innerHTML = '';
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight:700">${item.address}</td>
+                    <td>${item.pod_id || '-'}</td>
+                    <td>${item.serial_number || '-'}</td>
+                    <td style="color:var(--primary); font-weight:800">${item.reading}</td>
+                    <td><span class="tag" style="background:rgba(255,255,255,0.1); color:#fff">${item.unit}</span></td>
+                    <td>${new Date(item.recorded_at).toLocaleDateString('hu-HU')}</td>
+                    <td>
+                        ${item.image_path ? `<button class="btn btn-outline btn-sm" onclick="window.open('${_supabase.storage.from('neo-vault').getPublicUrl(item.image_path).data.publicUrl}', '_blank')"><i class="fa-solid fa-image"></i></button>` : '-'}
+                    </td>
+                    <td><button class="btn btn-outline btn-sm btn-delete" onclick="deleteReading(${item.id})"><i class="fa-solid fa-trash"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function deleteReading(id) {
+            if (!confirm('Biztosan törlöd ezt a mérőállást?')) return;
+            const { error } = await _supabase.from('meter_readings').delete().eq('id', id);
+            if (!error) { showToast("Törölve!"); fetchReadings(); }
+        }
+
+        function showToast(msg) {
+            const toast = document.createElement('div'); toast.className = 'toast';
+            toast.innerHTML = `<i class="fa-solid fa-check"></i> ${msg}`;
+            document.getElementById('toast-container').appendChild(toast);
+            setTimeout(() => { toast.style.animation = 'toastOut 0.4s forwards'; setTimeout(() => toast.remove(), 400); }, 3000);
+        }
+
+        function showAlert(title, msg, type = 'info', extra = '') {
+            document.getElementById('alert-title').innerText = title;
+            document.getElementById('alert-msg').innerText = msg;
+            document.getElementById('alert-extra').innerHTML = extra;
+            const icon = document.getElementById('alert-icon');
+            icon.innerHTML = type === 'error' ? '<i class="fa-solid fa-xmark" style="color:var(--danger)"></i>' : '<i class="fa-solid fa-info" style="color:var(--primary)"></i>';
+            document.getElementById('alert-btn').style.display = extra ? 'none' : 'inline-flex';
+            document.getElementById('alert-modal').classList.add('active');
+        }
+        function closeAlert() { document.getElementById('alert-modal').classList.remove('active'); }
+
+        function handleInstChange(cb) {
+            const grid = cb.closest('.inst-grid');
+            const cbs = grid.querySelectorAll('input[name="inst"]');
+            const allCb = grid.querySelector('input[value="ALL"]');
+
+            if (cb.value === 'ALL') cbs.forEach(i => i.checked = cb.checked);
+            else {
+                if (!cb.checked) allCb.checked = false;
+                else if (Array.from(cbs).every(i => i.checked)) allCb.checked = true;
+            }
+            grid.querySelectorAll('.inst-chip').forEach(chip => {
+                const checked = chip.querySelector('input').checked;
+                chip.classList.toggle('active', checked);
+            });
+        }
+
+        function renderFeatured() {
+            const container = document.getElementById('featured-container'); container.innerHTML = '';
+            const today = new Date().toLocaleDateString('hu-HU');
+
+            localDb.slice(0, 3).forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'featured-card';
+                card.style.position = 'relative';
+                card.onclick = () => openPreview(item.id);
+
+                const itemDate = new Date(item.created_at).toLocaleDateString('hu-HU');
+                const isNew = itemDate === today;
+                const typeCls = (item.file_type || 'Üzenet').toLowerCase();
+                const catCls = (item.category || 'Általános').toLowerCase();
+                const atts = (item.file_paths || []).filter(p => p).map(p => getFileTag(p)).join('');
+
+                card.innerHTML = `
+                        ${isNew ? '<div class="badge-new">FRISS</div>' : ''}
+                        <div class="date">${itemDate}</div>
+                        <h3>${item.name || 'Névtelen'}</h3>
+                        <div class="featured-comment">${item.comment || 'Nincs leírás.'}</div>
+                        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:5px">
+                            <div style="display:flex; gap:5px">
+                                <span class="tag tag-type tag-type-${typeCls}">${getTagIcon(item.file_type || 'Üzenet', 'type')}${item.file_type || 'Üzenet'}</span>
+                                <span class="tag tag-cat tag-cat-${catCls}">${getTagIcon(item.category || 'Általános', 'cat')}${item.category || 'Általános'}</span>
+                                ${item.utility ? `<span class="tag tag-util-${item.utility.toLowerCase().replace(/\./g, '')}">${item.utility}</span>` : ''}
+                            </div>
+                            <div class="featured-atts">${atts}</div>
+                        </div>
+                    `;
+                container.appendChild(card);
+            });
         }
 
         function switchView(view, btn) {
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById('view-' + view).classList.add('active');
-            btn.classList.add('active');
+            document.querySelectorAll('.view-section, .nav-link').forEach(e => e.classList.remove('active'));
+            document.getElementById('view-' + view).classList.add('active'); btn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             if (view === 'archive') renderArchive();
         }
 
-        function toggleAll(master) {
-            document.querySelectorAll('input[name="inst"]').forEach(cb => cb.checked = master.checked);
-        }
-
         function updateFileStatus(input) {
-            const zone = document.getElementById('drop-zone');
-            if (input.files.length > 0) {
-                document.getElementById('file-status').innerText = "Csatolva: " + input.files[0].name;
-                zone.classList.add('has-file');
-                if (!document.getElementById('item-title').value) {
-                    document.getElementById('item-title').value = input.files[0].name.split('.')[0];
-                }
-            } else {
-                document.getElementById('file-status').innerText = "Fájl csatolása (opcionális)";
-                zone.classList.remove('has-file');
-            }
+            const count = input.files.length;
+            if (count > 10) { showAlert('Figyelem', 'Maximum 10 fájlt tölthetsz fel egyszerre!'); input.value = ''; document.getElementById('file-status').innerText = 'Fájlok csatolása'; return; }
+            for (let f of input.files) { if (f.size > 20 * 1024 * 1024) { showAlert('Figyelem', `A ${f.name} fájl túl nagy (max 20MB)!`); input.value = ''; document.getElementById('file-status').innerText = 'Fájlok csatolása'; return; } }
+            document.getElementById('file-status').innerText = count > 0 ? `${count} fájl kiválasztva` : "Fájlok csatolása";
+            if (count === 1 && !document.getElementById('item-title').value) document.getElementById('item-title').value = input.files[0].name.split('.')[0];
         }
 
         async function submitItem() {
             const title = document.getElementById('item-title').value;
             const type = document.getElementById('item-type').value;
             const cat = document.getElementById('item-cat').value;
+            const util = document.getElementById('item-utility').value;
             const body = document.getElementById('item-body').value;
             const fileInput = document.getElementById('file-input');
-            const submitBtn = document.getElementById('submit-btn');
             const inst = [];
-
             const allChecked = document.querySelector('input[value="ALL"]').checked;
-            if (allChecked) inst.push("ALL");
-            else document.querySelectorAll('input[name="inst"]:checked').forEach(c => inst.push(c.value));
+            if (allChecked) inst.push("ALL"); else document.querySelectorAll('input[name="inst"]:checked').forEach(c => inst.push(c.value));
 
-            if (!title) return alert("Kérjük adjon meg egy címet!");
+            if (!title) return showAlert('Figyelem', 'Adj meg egy címet!');
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Beküldés...';
 
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Küldés...';
-
-            let filePath = null;
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Math.random()}.${fileExt}`;
-                filePath = `uploads/${fileName}`;
-
-                const { error: uploadError } = await _supabase.storage
-                    .from('neo-vault')
-                    .upload(filePath, file);
-
-                if (uploadError) {
-                    alert('Fájl feltöltési hiba: ' + uploadError.message);
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = 'Beküldés';
-                    return;
+            try {
+                let filePaths = [];
+                if (fileInput.files.length > 0) {
+                    for (let file of fileInput.files) {
+                        const filePath = `uploads/${Date.now()}_${file.name}`;
+                        await _supabase.storage.from('neo-vault').upload(filePath, file);
+                        filePaths.push(filePath);
+                    }
                 }
-            }
 
-            const { error: dbError } = await _supabase
-                .from('documents')
-                .insert([{
-                    name: title,
-                    file_type: type,
-                    category: cat,
-                    institutions: inst,
-                    comment: body,
-                    file_path: filePath
+                let contractData = {};
+                if (type === 'Szerződés') {
+                    const monthly = {};
+                    document.querySelectorAll('.m-input').forEach(i => {
+                        monthly[i.getAttribute('data-m')] = parseAmount(i.value) || 0;
+                    });
+                    contractData = {
+                        contract_annual_qty: parseAmount(document.getElementById('item-contract-qty').value) || 0,
+                        contract_qty_unit: document.getElementById('item-contract-qty-unit').value,
+                        contract_unit_price: parseAmount(document.getElementById('item-contract-price').value) || 0,
+                        contract_price_unit: document.getElementById('item-contract-price-unit').value,
+                        contract_total_amount: parseAmount(document.getElementById('item-contract-qty').value || 0) * parseAmount(document.getElementById('item-contract-price').value || 0),
+                        contract_subtype: document.getElementById('item-contract-subtype').value,
+                        contract_monthly_data: monthly
+                    };
+                }
+
+                const { error } = await _supabase.from('documents').insert([{
+                    name: title, file_type: type, category: cat, utility: util, institutions: inst, comment: body, file_paths: filePaths,
+                    ...contractData
                 }]);
+                if (!error) {
+                    showToast("Mentve!"); await fetchItems();
+                    document.getElementById('item-title').value = ''; document.getElementById('item-body').value = '';
+                    fileInput.value = ''; updateFileStatus(fileInput);
+                } else {
+                    showAlert('Hiba', 'Nem sikerült elmenteni: ' + error.message, 'error');
+                }
+            } catch (err) {
+                showAlert('Hiba', 'Váratlan hiba történt: ' + err.message, 'error');
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Beküldés';
+            }
+        }
 
-            if (dbError) {
-                alert('Adatbázis hiba: ' + dbError.message);
-            } else {
-                alert("Sikeres beküldés!");
-                await fetchItems();
-                // Clear form
-                document.getElementById('item-title').value = '';
-                document.getElementById('item-body').value = '';
-                fileInput.value = '';
-                updateFileStatus(fileInput);
+        function getFileTag(path) {
+            if (!path || typeof path !== 'string') return '';
+            const ext = path.split('.').pop().toLowerCase();
+            let cls = 'ext-other';
+            if (ext === 'pdf') cls = 'ext-pdf';
+            if (['jpg', 'jpeg', 'png', 'svg'].includes(ext)) cls = 'ext-jpg';
+            if (ext === 'html') cls = 'ext-html';
+            return `<span class="ext-tag ${cls}">${ext}</span>`;
+        }
+
+        function renderRecent() { renderTable('recent-list', localDb.slice(0, 5)); }
+        function renderArchive() {
+            const q = document.getElementById('search-box').value.toLowerCase().trim();
+            const fType = document.getElementById('filter-type').value;
+            const fCat = document.getElementById('filter-cat').value;
+            const fInst = document.getElementById('filter-inst').value;
+            const fUtil = document.getElementById('filter-util').value;
+
+            let filtered = localDb;
+
+            // Apply Search
+            if (q) {
+                const terms = q.split(/\s+/);
+                filtered = filtered.filter(item => {
+                    const insts = (item.institutions || []).join(' ');
+                    const dateStr = new Date(item.created_at).toLocaleDateString('hu-HU');
+                    const combinedText = `${item.name} ${item.file_type} ${item.category} ${item.utility || ''} ${item.comment || ''} ${insts} ${dateStr}`.toLowerCase();
+                    return terms.every(term => combinedText.includes(term));
+                });
             }
 
-            submitBtn.disabled = false;
-            submitBtn.innerText = 'Beküldés';
-        }
+            // Apply Filters
+            if (fType) filtered = filtered.filter(i => i.file_type === fType);
+            if (fCat) filtered = filtered.filter(i => i.category === fCat);
+            if (fUtil) filtered = filtered.filter(i => (i.utility || "") === fUtil);
+            if (fInst) filtered = filtered.filter(i => (i.institutions || []).includes(fInst));
 
-        function renderRecent() {
-            renderTable('recent-list', localDb.slice(0, 5));
-        }
-
-        function renderArchive() {
-            const q = document.getElementById('search-box').value.toLowerCase();
-            const filtered = localDb.filter(i =>
-                i.name.toLowerCase().includes(q) ||
-                (i.comment && i.comment.toLowerCase().includes(q))
-            );
             renderTable('archive-list', filtered);
         }
 
+        function getSubCls(sub) {
+            if (!sub) return 'sub-altalanos';
+            if (sub.includes('Áram')) return 'sub-aram';
+            if (sub.includes('Gáz')) return 'sub-gaz';
+            if (sub.includes('Szolgáltatási')) return 'sub-szolgaltatasi';
+            if (sub.includes('Vállalkozási')) return 'sub-vallalkozasi';
+            if (sub.includes('Hálózat-használati')) return 'sub-halozat-haszn';
+            if (sub.includes('Hálózatcsatlakozási')) return 'sub-halozat-csatl';
+            if (sub.includes('Egyetemes')) return 'sub-egyetemes';
+            return 'sub-altalanos';
+        }
+
         function renderTable(id, data) {
-            const tbody = document.getElementById(id);
-            tbody.innerHTML = '';
+            const tbody = document.getElementById(id); tbody.innerHTML = '';
             data.forEach(item => {
                 const tr = document.createElement('tr');
-                const date = new Date(item.created_at).toLocaleDateString('hu-HU');
+                const typeCls = (item.file_type || 'üzenet').toLowerCase();
+                const catCls = (item.category || 'általános').toLowerCase();
+                const atts = (item.file_paths || []).filter(p => p).map(p => getFileTag(p)).join('');
                 tr.innerHTML = `
-                    <td style="font-weight:700">${item.name}</td>
-                    <td>${item.file_type}</td>
-                    <td>${item.institutions.map(i => `<span class="tag tag-${i.toLowerCase()}">${i === 'ALL' ? 'MINDENKI' : i}</span>`).join('')}</td>
-                    <td>${date}</td>
-                    <td>
-                        <button class="btn btn-outline btn-sm" onclick="openPreview('${item.id}')"><i class="fa-solid fa-eye"></i></button>
-                        <button class="btn btn-outline btn-sm" onclick="renameItem('${item.id}')"><i class="fa-solid fa-edit"></i></button>
-                        <button class="btn btn-sm" style="color:var(--danger)" onclick="deleteItem('${item.id}')"><i class="fa-solid fa-trash"></i></button>
+                    <td class="col-name" style="font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${item.name || ''}">${item.name || '---'}</td>
+                    <td><span class="tag tag-type tag-type-${typeCls}">${getTagIcon(item.file_type || 'Üzenet', 'type')}${item.file_type || 'Üzenet'}</span>
+                        ${item.file_type === 'Szerződés' ? `<div style="margin-top:4px"><span class="sub-tag ${getSubCls(item.contract_subtype)}">${item.contract_subtype || 'Általános'}</span></div>` : ''}</td>
+                    <td><span class="tag tag-cat tag-cat-${catCls}">${getTagIcon(item.category || 'Általános', 'cat')}${item.category || 'Általános'}</span></td>
+                    <td class="col-util"><span class="tag tag-util-${(item.utility || '').toLowerCase().replace(/\./g, '')}">${item.utility || '-'}</span></td>
+                    <td><div class="tag-container">${item.institutions.map(i => `<span class="tag tag-${i.toLowerCase()}">${i === 'ALL' ? 'Mindenki' : i}</span>`).join('')}</div></td>
+                    <td class="comment-cell">${item.comment || '---'}</td>
+                    <td>${atts || '---'}</td>
+                    <td style="white-space:nowrap">
+                        <div style="font-size:0.75rem; margin-bottom:5px; opacity:0.7">${new Date(item.created_at).toLocaleDateString('hu-HU')}</div>
+                        <div style="display:flex; gap:6px">
+                            <button class="btn btn-outline btn-sm btn-view" onclick="openPreview('${item.id}')" title="Megtekintés"><i class="fa-solid fa-eye"></i></button>
+                            <button class="btn btn-outline btn-sm btn-edit" onclick="openEditModal('${item.id}')" title="Szerkesztés"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn btn-outline btn-sm btn-delete" onclick="confirmDelete('${item.id}')" title="Törlés"><i class="fa-solid fa-trash"></i></button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -672,49 +2371,655 @@
             const body = document.getElementById('modal-body');
             document.getElementById('modal-title').innerText = item.name;
 
-            if (item.file_path) {
-                const { data } = _supabase.storage
-                    .from('neo-vault')
-                    .getPublicUrl(item.file_path);
+            let contractHtml = '';
+            if (item.file_type === 'Szerződés') {
+                const total = (item.contract_total_amount || 0).toLocaleString('hu-HU');
+                const sub = item.contract_subtype || 'Általános';
+                let subCls = 'sub-altalanos';
+                if (sub.includes('Áram')) subCls = 'sub-aram';
+                else if (sub.includes('Gáz')) subCls = 'sub-gaz';
+                else if (sub.includes('Szolgáltatási')) subCls = 'sub-szolgaltatasi';
+                else if (sub.includes('Vállalkozási')) subCls = 'sub-vallalkozasi';
+                else if (sub.includes('Hálózat-használati')) subCls = 'sub-halozat-haszn';
+                else if (sub.includes('Hálózatcsatlakozási')) subCls = 'sub-halozat-csatl';
+                else if (sub.includes('Egyetemes')) subCls = 'sub-egyetemes';
 
-                if (item.file_path.toLowerCase().endsWith('.pdf')) {
-                    body.innerHTML = `<iframe src="${data.publicUrl}"></iframe><p style="margin-top:10px">${item.comment || ''}</p>`;
-                } else {
-                    body.innerHTML = `<div class="msg-bubble"><p>${item.comment || ''}</p><hr style="margin:1rem 0; border:0; border-top:1px solid var(--border);"><p>Melléklet letöltése: <a href="${data.publicUrl}" target="_blank" style="color:var(--primary)">Kattintson ide</a></p></div>`;
+                contractHtml = `
+                    <div style="background: rgba(251, 191, 36, 0.05); padding: 1rem; border-radius: 8px; border: 1px dashed var(--primary); margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--primary); font-size: 0.8rem; margin-bottom: 15px; text-transform: uppercase; display:flex; justify-content:space-between; align-items:center">
+                            Szerződéses adatok 
+                            <span class="sub-tag ${subCls}">${sub}</span>
+                        </h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 0.85rem;">
+                            <div><span style="opacity:0.7">Éves mennyiség:</span><br><b>${item.contract_annual_qty || 0} ${item.contract_qty_unit || ''}</b></div>
+                            <div><span style="opacity:0.7">Egységár (nettó):</span><br><b>${item.contract_unit_price || 0} ${item.contract_price_unit || ''}</b></div>
+                            <div><span style="opacity:0.7">Szerződéses érték (nettó):</span><br><b style="color:var(--primary)">${total} Ft</b></div>
+                        </div>
+                `;
+
+                if (item.contract_monthly_data) {
+                    const months = ['Jan', 'Feb', 'Már', 'Ápr', 'Máj', 'Jún', 'Júl', 'Aug', 'Szep', 'Okt', 'Nov', 'Dec'];
+                    contractHtml += `<div style="margin-top:15px; display:grid; grid-template-columns: repeat(6, 1fr); gap:6px; background:rgba(0,0,0,0.2); padding:10px; border-radius:6px;">`;
+                    months.forEach((m, idx) => {
+                        const val = item.contract_monthly_data[idx + 1] || 0;
+                        contractHtml += `<div style="text-align:center; font-size:0.65rem"><span style="opacity:0.6">${m}</span><br><b>${val}</b></div>`;
+                    });
+                    contractHtml += `</div>`;
                 }
-            } else {
-                body.innerHTML = `<div class="msg-bubble">${item.comment || '<i>Nincs szöveges tartalom</i>'}</div>`;
+                contractHtml += `</div>`;
             }
 
+            let html = contractHtml + `<div style="margin-bottom:1.5rem">${item.comment || 'Nincs leírás.'}</div>`;
+            const paths = item.file_paths || [];
+            if (paths.length > 0) {
+                const isSinglePdf = paths.length === 1 && paths[0].toLowerCase().endsWith('.pdf');
+
+                if (isSinglePdf) {
+                    const { data } = _supabase.storage.from('neo-vault').getPublicUrl(paths[0]);
+                    html += `
+                            <div style="margin-top:1rem; border:1px solid var(--border); border-radius:8px; overflow:hidden">
+                                <iframe src="${data.publicUrl}" style="width:100%; height:600px; border:none;"></iframe>
+                            </div>
+                            <div style="text-align:center; margin-top:10px">
+                                <a href="${data.publicUrl}" target="_blank" class="btn btn-outline btn-sm">Megnyitás külön lapon</a>
+                            </div>
+                        `;
+                } else {
+                    html += `<div style="display:grid; gap:10px">`;
+                    paths.forEach(p => {
+                        const { data } = _supabase.storage.from('neo-vault').getPublicUrl(p);
+                        const ext = p.split('.').pop().toLowerCase();
+                        const isImg = ['jpg', 'jpeg', 'png', 'svg'].includes(ext);
+                        if (isImg) html += `<div style="border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center"><img src="${data.publicUrl}" style="max-width:100%; max-height:300px; border-radius:4px; margin-bottom:8px"><br><a href="${data.publicUrl}" target="_blank" class="btn btn-outline btn-sm">Letöltés</a></div>`;
+                        else if (ext === 'pdf') html += `<div style="border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center"><i class="fa-solid fa-file-pdf" style="font-size:2rem; color:#ef4444; margin-bottom:8px"></i><br><strong>${p.split('_').pop()}</strong><br><a href="${data.publicUrl}" target="_blank" class="btn btn-outline btn-sm" style="margin-top:8px">PDF Megtekintése</a></div>`;
+                        else html += `<div style="border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center"><i class="fa-solid fa-file" style="font-size:2rem; margin-bottom:8px"></i><br><strong>${p.split('_').pop()}</strong><br><a href="${data.publicUrl}" target="_blank" class="btn btn-outline btn-sm" style="margin-top:8px">Letöltés</a></div>`;
+                    });
+                    html += `</div>`;
+                }
+            }
+            body.innerHTML = html;
             document.getElementById('modal').classList.add('active');
         }
-
         function closeModal() { document.getElementById('modal').classList.remove('active'); }
 
-        async function renameItem(id) {
-            const newName = prompt("Adjon meg egy új nevet:");
-            if (newName) {
-                const { error } = await _supabase
-                    .from('documents')
-                    .update({ name: newName })
-                    .eq('id', id);
-
-                if (error) alert('Hiba az átnevezéskor: ' + error.message);
-                else await fetchItems();
-            }
+        function confirmDelete(id) {
+            const extra = `<input type="password" id="birth-input" class="input" placeholder="Azonosító..." style="text-align:center">
+                           <div style="display:flex; gap:10px; margin-top:1rem">
+                               <button class="btn btn-outline" style="flex:1" onclick="closeAlert()">Mégse</button>
+                               <button class="btn btn-primary" style="flex:1" onclick="processDelete('${id}')">Törlés</button>
+                           </div>`;
+            showAlert('Biztonsági törlés', 'Törléshez add meg a születési éved visszafele:', 'info', extra);
         }
 
-        async function deleteItem(id) {
-            if (confirm('Biztosan törli ezt a bejegyzést?')) {
+        async function processDelete(id) {
+            const input = document.getElementById('birth-input').value;
+            const isSuccess = input === "0992"; // 2990 reversed
+
+            try {
+                // Log attempt (even if security_logs table is missing, don't crash)
+                await _supabase.from('security_logs').insert([{ doc_id: id, entered_value: input, is_success: isSuccess }]);
+            } catch (e) { }
+
+            if (isSuccess) {
                 const item = localDb.find(i => i.id == id);
-                if (item.file_path) {
-                    await _supabase.storage.from('neo-vault').remove([item.file_path]);
+                const paths = item.file_paths || [];
+                if (paths.length > 0) await _supabase.storage.from('neo-vault').remove(paths);
+                await _supabase.from('documents').delete().eq('id', id);
+                closeAlert(); showToast('Törölve.'); fetchItems();
+            } else showAlert('Hiba', 'Helytelen kód!', 'error');
+        }
+        async function openEditModal(id) {
+            const item = localDb.find(i => i.id == id);
+            if (!item) return;
+
+            document.getElementById('edit-title').value = item.name;
+            document.getElementById('edit-type').value = item.file_type || 'Üzenet';
+            document.getElementById('edit-cat').value = item.category || 'Általános';
+            document.getElementById('edit-util').value = item.utility || '';
+            document.getElementById('edit-body').value = item.comment || '';
+
+            // Handle Contract Fields in Edit
+            const typeSelect = document.getElementById('edit-type');
+            const contractFields = document.getElementById('edit-contract-fields');
+            const subTypeSelect = document.getElementById('edit-contract-subtype');
+            const monthlyGrid = document.getElementById('edit-monthly-grid-section');
+
+            const toggleContract = () => {
+                contractFields.style.display = typeSelect.value === 'Szerződés' ? 'block' : 'none';
+            };
+            const toggleMonthly = () => {
+                const sub = subTypeSelect.value;
+                monthlyGrid.style.display = (sub.includes('Áram') || sub.includes('Gáz')) ? 'block' : 'none';
+            };
+
+            typeSelect.onchange = toggleContract;
+            subTypeSelect.onchange = toggleMonthly;
+
+            if (item.file_type === 'Szerződés') {
+                document.getElementById('edit-contract-qty').value = item.contract_annual_qty || 0;
+                document.getElementById('edit-contract-qty-unit').value = item.contract_qty_unit || 'm3';
+                document.getElementById('edit-contract-price').value = item.contract_unit_price || 0;
+                document.getElementById('edit-contract-price-unit').value = item.contract_price_unit || 'Ft/m3';
+                document.getElementById('edit-contract-subtype').value = item.contract_subtype || 'Általános';
+
+                if (item.contract_monthly_data) {
+                    document.querySelectorAll('.edit-m-input').forEach(i => {
+                        i.value = item.contract_monthly_data[i.getAttribute('data-m')] || 0;
+                    });
                 }
-                const { error } = await _supabase.from('documents').delete().eq('id', id);
-                if (error) alert('Hiba a törléskor: ' + error.message);
-                else await fetchItems();
+                const q = item.contract_annual_qty || 0;
+                const p = item.contract_unit_price || 0;
+                document.getElementById('edit-contract-total').value = (q * p).toLocaleString('hu-HU') + ' Ft';
+            }
+            toggleContract();
+            toggleMonthly();
+
+            const cbs = document.querySelectorAll('input[name="edit-inst"]');
+            const allCb = document.querySelector('input[value="ALL"][onchange*="handleEditInstChange"]');
+            cbs.forEach(cb => { cb.checked = (item.institutions || []).includes(cb.value); });
+            allCb.checked = (item.institutions || []).includes("ALL");
+            document.getElementById('edit-inst-grid').querySelectorAll('.inst-chip').forEach(chip => {
+                const checked = chip.querySelector('input').checked;
+                chip.classList.toggle('active', checked);
+            });
+
+            renderEditFileList(item);
+            document.getElementById('edit-save-btn').onclick = () => saveEdit(id);
+            document.getElementById('edit-modal').classList.add('active');
+        }
+
+        function renderEditFileList(item) {
+            const list = document.getElementById('edit-file-list');
+            list.innerHTML = '';
+            const paths = item.file_paths || [];
+            if (paths.length === 0) { list.innerHTML = '<p style="font-size:0.8rem; opacity:0.5; font-style:italic">Nincs csatolt fájl.</p>'; return; }
+
+            paths.forEach((p, idx) => {
+                const name = p.split('_').slice(1).join('_');
+                const div = document.createElement('div');
+                div.className = 'file-manager-item';
+                div.innerHTML = `
+                    <div class="file-info">
+                        ${getFileTag(p)}
+                        <span class="file-name-text" title="${name}">${name}</span>
+                    </div>
+                    <div class="file-actions">
+                        <button class="action-btn rename" onclick="renameAttachment('${item.id}', '${p}')" title="Átnevezés"><i class="fa-solid fa-pen"></i></button>
+                        <button class="action-btn delete" onclick="deleteAttachment('${item.id}', '${p}')" title="Törlés"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        async function renameAttachment(itemId, oldPath) {
+            const oldName = oldPath.split('_').slice(1).join('_');
+            const newName = prompt('Add meg az új fájlnevet:', oldName);
+            if (!newName || newName === oldName) return;
+
+            const timestamp = oldPath.split('_')[0];
+            const newPath = `${timestamp}_${newName}`;
+
+            try {
+                // Move in storage
+                const { error: moveErr } = await _supabase.storage.from('neo-vault').move(oldPath, newPath);
+                if (moveErr) throw moveErr;
+
+                // Update DB
+                const item = localDb.find(i => i.id == itemId);
+                const newPaths = item.file_paths.map(p => p === oldPath ? newPath : p);
+                const { error: dbErr } = await _supabase.from('documents').update({ file_paths: newPaths }).eq('id', itemId);
+                if (dbErr) throw dbErr;
+
+                showToast("Fájl átnevezve!");
+                await fetchItems();
+                const updatedItem = localDb.find(i => i.id == itemId);
+                renderEditFileList(updatedItem);
+            } catch (err) {
+                showAlert('Hiba', 'Átnevezés sikertelen: ' + err.message, 'error');
             }
         }
+
+        async function deleteAttachment(itemId, filePath) {
+            if (!confirm('Biztosan törlöd ezt a mellékletet?')) return;
+
+            try {
+                // Remove from storage
+                const { error: storageErr } = await _supabase.storage.from('neo-vault').remove([filePath]);
+                if (storageErr) throw storageErr;
+
+                // Update DB
+                const item = localDb.find(i => i.id == itemId);
+                const newPaths = item.file_paths.filter(p => p !== filePath);
+                const { error: dbErr } = await _supabase.from('documents').update({ file_paths: newPaths }).eq('id', itemId);
+                if (dbErr) throw dbErr;
+
+                showToast("Melléklet törölve.");
+                await fetchItems();
+                const updatedItem = localDb.find(i => i.id == itemId);
+                renderEditFileList(updatedItem);
+            } catch (err) {
+                showAlert('Hiba', 'Törlés sikertelen: ' + err.message, 'error');
+            }
+        }
+
+        function closeEditModal() { document.getElementById('edit-modal').classList.remove('active'); }
+
+        function handleEditInstChange(cb) {
+            const grid = document.getElementById('edit-inst-grid');
+            const allCb = grid.querySelector('input[value="ALL"]');
+            const instCbs = grid.querySelectorAll('input[name="edit-inst"]');
+
+            if (cb.value === 'ALL') {
+                instCbs.forEach(i => i.checked = cb.checked);
+            } else {
+                if (!cb.checked) allCb.checked = false;
+                else if (Array.from(instCbs).every(i => i.checked)) allCb.checked = true;
+            }
+            grid.querySelectorAll('.inst-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.querySelector('input').checked);
+            });
+        }
+
+        async function saveEdit(id) {
+            const title = document.getElementById('edit-title').value;
+            const type = document.getElementById('edit-type').value;
+            const cat = document.getElementById('edit-cat').value;
+            const util = document.getElementById('edit-util').value;
+            const body = document.getElementById('edit-body').value;
+
+            const inst = [];
+            const allChecked = document.querySelector('input[value="ALL"][onchange*="handleEditInstChange"]').checked;
+            if (allChecked) inst.push("ALL"); else document.querySelectorAll('input[name="edit-inst"]:checked').forEach(c => inst.push(c.value));
+
+            let contractData = {
+                contract_annual_qty: null, contract_qty_unit: null, contract_unit_price: null,
+                contract_price_unit: null, contract_total_amount: null, contract_subtype: null, contract_monthly_data: null
+            };
+
+            if (type === 'Szerződés') {
+                const monthly = {};
+                document.querySelectorAll('.edit-m-input').forEach(i => {
+                    monthly[i.getAttribute('data-m')] = parseAmount(i.value) || 0;
+                });
+                contractData = {
+                    contract_annual_qty: parseAmount(document.getElementById('edit-contract-qty').value) || 0,
+                    contract_qty_unit: document.getElementById('edit-contract-qty-unit').value,
+                    contract_unit_price: parseAmount(document.getElementById('edit-contract-price').value) || 0,
+                    contract_price_unit: document.getElementById('edit-contract-price-unit').value,
+                    contract_total_amount: (parseAmount(document.getElementById('edit-contract-qty').value) || 0) * (parseAmount(document.getElementById('edit-contract-price').value) || 0),
+                    contract_subtype: document.getElementById('edit-contract-subtype').value,
+                    contract_monthly_data: monthly
+                };
+            }
+
+            if (!title) return showAlert('Figyelem', 'A cím nem lehet üres!');
+
+            const btn = document.getElementById('edit-save-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mentés...';
+
+            const { error } = await _supabase.from('documents').update({
+                name: title, file_type: type, category: cat, utility: util, institutions: inst, comment: body,
+                ...contractData
+            }).eq('id', id);
+
+            if (!error) {
+                showToast("Változtatások mentve!");
+                closeEditModal();
+            } else {
+                showAlert('Hiba', 'Nem sikerült a mentés: ' + error.message, 'error');
+            }
+            btn.disabled = false;
+            btn.innerHTML = 'Változtatások mentése';
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* REGISTRY LOGIC                                                             */
+        /* -------------------------------------------------------------------------- */
+
+        async function fetchRegistry() {
+            const { data, error } = await _supabase.from('registry').select('*').order('created_at', { ascending: false });
+            if (!error) {
+                registryData = data || [];
+                renderRegistryTable();
+            } else {
+                console.error('Error fetching registry:', error);
+            }
+        }
+
+        function switchRegistryTab(tabName, btnElement) {
+            currentRegistryTab = tabName;
+            document.querySelectorAll('.registry-tabs .nav-link').forEach(btn => btn.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
+
+            // Clear filter when switching tabs
+            document.getElementById('registry-search').value = '';
+            renderRegistryTable();
+        }
+
+        function renderRegistryTable() {
+            const tbody = document.getElementById('registry-list');
+            tbody.innerHTML = '';
+
+            const searchTerm = document.getElementById('registry-search').value.toLowerCase();
+
+            const filteredData = registryData.filter(item => {
+                if (item.category !== currentRegistryTab) return false;
+
+                if (!searchTerm) return true;
+
+                // Global search across all registry fields
+                const searchStr = `
+                    ${item.pod_id || ''} 
+                    ${item.address || ''} 
+                    ${item.contracted_qty || ''} 
+                    ${item.contract_qty_unit || ''}
+                    ${item.valid_from || ''} 
+                    ${item.valid_to || ''} 
+                    ${item.status || ''}
+                `.toLowerCase();
+
+                return searchStr.includes(searchTerm);
+            });
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; opacity:0.5; padding: 2rem;">Nincs megjeleníthető adat.</td></tr>';
+                return;
+            }
+
+            filteredData.forEach(item => {
+                const tr = document.createElement('tr');
+                let unitStr = item.contract_qty_unit;
+                if (!unitStr) {
+                    if (item.category === 'Áram') unitStr = "kWh/év";
+                    else if (item.category === 'Gáz') unitStr = "MJ/év";
+                    else if (item.category === 'Víz') unitStr = "m3/év";
+                    else if (item.category === 'Távhő') unitStr = "GJ/év";
+                    else unitStr = "db";
+                }
+
+                tr.innerHTML = `
+                    <td>${item.pod_id || '-'}</td>
+                    <td>${item.address || '-'}</td>
+                    <td>${item.contracted_qty ? Number(item.contracted_qty).toLocaleString('hu-HU') + ' ' + unitStr : '-'}</td>
+                    <td>${item.valid_from || '-'}</td>
+                    <td>${item.valid_to || '-'}</td>
+                    <td><span class="sub-tag" style="background: rgba(255,255,255,0.1)">${item.status || '-'}</span></td>
+                    <td>
+                        <button class="action-btn rename" onclick="openRegistryModal('${item.id}')" title="Szerkesztés"><i class="fa-solid fa-pen"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateCustomRegOptions(category) {
+            const unitDisplay = document.getElementById('reg-qty-unit-display');
+            const unitSelect = document.getElementById('reg-qty-unit');
+
+            if (category === 'Gáz') {
+                unitDisplay.style.display = 'none';
+                unitSelect.style.display = 'inline-block';
+            } else {
+                unitSelect.style.display = 'none';
+                unitDisplay.style.display = 'inline-block';
+                if (category === 'Áram') unitDisplay.innerText = "kWh/év";
+                else if (category === 'Víz') unitDisplay.innerText = "m3/év";
+                else if (category === 'Távhő') unitDisplay.innerText = "GJ/év";
+                else unitDisplay.innerText = "db/év";
+            }
+        }
+
+        function openRegistryModal(id) {
+            const modal = document.getElementById('registry-modal');
+            const title = document.getElementById('registry-modal-title');
+            const delBtn = document.getElementById('reg-del-btn');
+
+            document.getElementById('reg-id').value = id || '';
+
+            if (id) {
+                title.innerText = 'Rekord szerkesztése';
+                delBtn.style.display = 'block';
+                const item = registryData.find(i => i.id === id);
+                if (item) {
+                    document.getElementById('reg-category').value = item.category || currentRegistryTab;
+                    updateCustomRegOptions(item.category || currentRegistryTab);
+
+                    if ((item.category || currentRegistryTab) === 'Gáz' && item.contract_qty_unit) {
+                        document.getElementById('reg-qty-unit').value = item.contract_qty_unit;
+                    }
+
+                    document.getElementById('reg-pod').value = item.pod_id || '';
+                    document.getElementById('reg-address').value = item.address || '';
+                    document.getElementById('reg-qty').value = item.contracted_qty || '';
+                    document.getElementById('reg-status').value = item.status || 'Aktív';
+                    document.getElementById('reg-valid-from').value = item.valid_from || '';
+                    document.getElementById('reg-valid-to').value = item.valid_to || '';
+                }
+            } else {
+                title.innerText = 'Új rekord hozzáadása';
+                delBtn.style.display = 'none';
+                document.getElementById('reg-category').value = currentRegistryTab;
+                updateCustomRegOptions(currentRegistryTab);
+
+                // Clear form
+                document.getElementById('reg-pod').value = '';
+                document.getElementById('reg-address').value = '';
+                document.getElementById('reg-qty').value = '';
+                document.getElementById('reg-status').value = 'Aktív';
+                document.getElementById('reg-valid-from').value = '';
+                document.getElementById('reg-valid-to').value = '';
+            }
+            modal.classList.add('active');
+        }
+
+        function closeRegistryModal() {
+            document.getElementById('registry-modal').classList.remove('active');
+        }
+
+        async function saveRegistryItem() {
+            const id = document.getElementById('reg-id').value;
+            const category = document.getElementById('reg-category').value;
+            const pod_id = document.getElementById('reg-pod').value;
+            const address = document.getElementById('reg-address').value;
+            const contracted_qty = parseFloat(document.getElementById('reg-qty').value) || null;
+            const status = document.getElementById('reg-status').value;
+            const valid_from = document.getElementById('reg-valid-from').value || null;
+            const valid_to = document.getElementById('reg-valid-to').value || null;
+
+            const contract_qty_unit = category === 'Gáz'
+                ? document.getElementById('reg-qty-unit').value
+                : document.getElementById('reg-qty-unit-display').innerText;
+
+            const payload = { category, pod_id, address, contracted_qty, contract_qty_unit, status, valid_from, valid_to };
+
+            if (!category) return showAlert('Figyelem', 'Kategória megadása kötelező!');
+
+            if (id) {
+                const { error } = await _supabase.from('registry').update(payload).eq('id', id);
+                if (error) return showAlert('Hiba', error.message, 'error');
+                showToast("Sikeres módosítás!");
+            } else {
+                const { error } = await _supabase.from('registry').insert([payload]);
+                if (error) return showAlert('Hiba', error.message, 'error');
+                showToast("Új rekord hozzáadva!");
+            }
+
+            closeRegistryModal();
+            fetchRegistry();
+        }
+
+        async function deleteRegistryItem() {
+            const id = document.getElementById('reg-id').value;
+            if (!id) return;
+            if (!confirm('Biztosan törölni szeretné ezt a rekordot?')) return;
+
+            const { error } = await _supabase.from('registry').delete().eq('id', id);
+            if (error) return showAlert('Hiba', error.message, 'error');
+
+            showToast("Rekord törölve.");
+            closeRegistryModal();
+            fetchRegistry();
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* PHONEBOOK LOGIC                                                            */
+        /* -------------------------------------------------------------------------- */
+
+        async function fetchPhonebook() {
+            const { data, error } = await _supabase.from('phonebook').select('*').order('name', { ascending: true });
+            if (!error) {
+                phonebookData = data || [];
+                renderPhonebookTable();
+            } else {
+                console.error('Error fetching phonebook:', error);
+            }
+        }
+
+        function renderPhonebookTable() {
+            const tbody = document.getElementById('phonebook-list');
+            tbody.innerHTML = '';
+
+            const searchTerm = document.getElementById('phonebook-search').value.toLowerCase();
+
+            const filteredData = phonebookData.filter(item => {
+                if (!searchTerm) return true;
+
+                // Global search across all fields
+                const searchStr = `
+                    ${item.name || ''} 
+                    ${item.title || ''} 
+                    ${item.company || ''} 
+                    ${item.department || ''} 
+                    ${item.mobile_phone || ''} 
+                    ${item.work_phone || ''} 
+                    ${item.email || ''}
+                    ${item.comment || ''}
+                `.toLowerCase();
+
+                return searchStr.includes(searchTerm);
+            });
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; opacity:0.5; padding: 2rem;">Nincs megjeleníthető adat.</td></tr>';
+                return;
+            }
+
+            filteredData.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight: bold; color: var(--primary)">${item.name || '-'}</td>
+                    <td>${item.title || '-'}</td>
+                    <td>${item.company || '-'}</td>
+                    <td>${item.department || '-'}</td>
+                    <td>${item.mobile_phone ? `<a href="tel:${item.mobile_phone}" style="color:var(--text-main); text-decoration:none;"><i class="fa-solid fa-mobile-screen"></i> ${item.mobile_phone}</a>` : '-'}</td>
+                    <td>${item.work_phone ? `<a href="tel:${item.work_phone}" style="color:var(--text-main); text-decoration:none;"><i class="fa-solid fa-phone"></i> ${item.work_phone}</a>` : '-'}</td>
+                    <td>${item.email ? `<a href="mailto:${item.email}" style="color:var(--text-main); text-decoration:none;"><i class="fa-solid fa-envelope"></i> ${item.email}</a>` : '-'}</td>
+                    <td>
+                        <button class="action-btn rename" onclick="openPhonebookModal('${item.id}')" title="Szerkesztés"><i class="fa-solid fa-pen"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updatePbAvatar() {
+            const name = document.getElementById('pb-name').value;
+            const avatar = document.getElementById('pb-avatar');
+            if (name && name.length > 0) {
+                avatar.innerText = name.charAt(0).toUpperCase();
+            } else {
+                avatar.innerText = '?';
+            }
+        }
+
+        function openPhonebookModal(id) {
+            const modal = document.getElementById('phonebook-modal');
+            const title = document.getElementById('phonebook-modal-title');
+            const delBtn = document.getElementById('pb-del-btn');
+
+            document.getElementById('pb-id').value = id || '';
+
+            if (id) {
+                title.innerText = 'Kapcsolat szerkesztése';
+                delBtn.style.display = 'block';
+                const item = phonebookData.find(i => i.id === id);
+                if (item) {
+                    document.getElementById('pb-name').value = item.name || '';
+                    document.getElementById('pb-title').value = item.title || '';
+                    document.getElementById('pb-company').value = item.company || '';
+                    document.getElementById('pb-department').value = item.department || '';
+                    document.getElementById('pb-mobile').value = item.mobile_phone || '';
+                    document.getElementById('pb-work').value = item.work_phone || '';
+                    document.getElementById('pb-email').value = item.email || '';
+                    document.getElementById('pb-comment').value = item.comment || '';
+                }
+            } else {
+                title.innerText = 'Új kapcsolat hozzáadása';
+                delBtn.style.display = 'none';
+
+                // Clear form
+                document.getElementById('pb-name').value = '';
+                document.getElementById('pb-title').value = '';
+                document.getElementById('pb-company').value = '';
+                document.getElementById('pb-department').value = '';
+                document.getElementById('pb-mobile').value = '';
+                document.getElementById('pb-work').value = '';
+                document.getElementById('pb-email').value = '';
+                document.getElementById('pb-comment').value = '';
+            }
+
+            updatePbAvatar();
+            modal.classList.add('active');
+        }
+
+        function closePhonebookModal() {
+            document.getElementById('phonebook-modal').classList.remove('active');
+        }
+
+        async function savePhonebookItem() {
+            const id = document.getElementById('pb-id').value;
+            const name = document.getElementById('pb-name').value;
+            const title = document.getElementById('pb-title').value;
+            const company = document.getElementById('pb-company').value;
+            const department = document.getElementById('pb-department').value;
+            const mobile_phone = document.getElementById('pb-mobile').value;
+            const work_phone = document.getElementById('pb-work').value;
+            const email = document.getElementById('pb-email').value;
+            const comment = document.getElementById('pb-comment').value;
+
+            if (!name) return showAlert('Figyelem', 'A Név megadása kötelező!');
+
+            const payload = { name, title, company, department, mobile_phone, work_phone, email, comment };
+
+            if (id) {
+                const { error } = await _supabase.from('phonebook').update(payload).eq('id', id);
+                if (error) return showAlert('Hiba', error.message, 'error');
+                showToast("Sikeres módosítás!");
+            } else {
+                const { error } = await _supabase.from('phonebook').insert([payload]);
+                if (error) return showAlert('Hiba', error.message, 'error');
+                showToast("Új kapcsolat létrehozva!");
+            }
+
+            closePhonebookModal();
+            fetchPhonebook();
+        }
+
+        async function deletePhonebookItem() {
+            const id = document.getElementById('pb-id').value;
+            if (!id) return;
+            if (!confirm('Biztosan törölni szeretné ezt a kapcsolatot?')) return;
+
+            const { error } = await _supabase.from('phonebook').delete().eq('id', id);
+            if (error) return showAlert('Hiba', error.message, 'error');
+
+            showToast("Kapcsolat törölve.");
+            closePhonebookModal();
+            fetchPhonebook();
+        }
+
     </script>
 </body>
 
